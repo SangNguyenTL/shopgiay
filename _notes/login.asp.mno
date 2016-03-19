@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<info>
+	<infoitem key="UD_User" value="name:name;datatype:varchar,name:principal_id;datatype:int,name:diagram_id;datatype:int,name:version;datatype:int,name:definition;datatype:" />
+</info>

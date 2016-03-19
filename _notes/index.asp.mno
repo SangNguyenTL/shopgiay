@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<info>
+	<infoitem key="UD_Recordset1" value="name:productID;datatype:int,name:proName;datatype:varchar,name:price;datatype:int,name:inventory;datatype:bit,name:prodescrible;datatype:varchar,name:dateEntry;datatype:varchar,name:newArrival;datatype:bit,name:brandName;datatype:varchar,name:image;datatype:varchar" />
+	<infoitem key="UD_rsProductnew" value="name:productID;datatype:int,name:proName;datatype:varchar,name:price;datatype:int,name:inventory;datatype:bit,name:prodescrible;datatype:varchar,name:dateEntry;datatype:varchar,name:newArrival;datatype:bit,name:brandName;datatype:varchar,name:image;datatype:varchar" />
+</info>

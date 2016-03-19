@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<info>
+	<infoitem key="UD_rsUser" value="name:userID;datatype:int,name:fullName;datatype:varchar,name:passW;datatype:varchar,name:email;datatype:varchar,name:phone;datatype:varchar,name:Role;datatype:bit,name:Address;datatype:varchar" />
+</info>

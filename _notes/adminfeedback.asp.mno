@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<info>
+	<infoitem key="UD_feedBack" value="name:feedId;datatype:int,name:fullName;datatype:varchar,name:email;datatype:varchar,name:content;datatype:varchar,name:datePost;datatype:smalldatetime,name:subject;datatype:varchar,name:status;datatype:int" />
+</info>
