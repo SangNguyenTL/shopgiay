@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<info>
-	<infoitem key="UD_RequestQString1" value="emailUser" />
-	<infoitem key="UD_requestQStringCount" value="1" />
-	<infoitem key="UD_Recordset1" value="name:userID;datatype:int,name:fullName;datatype:varchar,name:passW;datatype:varchar,name:email;datatype:varchar,name:phone;datatype:varchar,name:role;datatype:bit" />
-</info>
