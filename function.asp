@@ -409,24 +409,24 @@ end if
 
 function boxProduct (id,name,price,newArrival,img,inventory)
 %>
-										<div class="col-sm-4">
-											<div class="product-image-wrapper">
-												<div class="single-products">
-													<div class="productinfo text-center boxc">
-														<img class="contentc" src="<%=img%>" alt="">
-														<% if newArrival = "True" then %>
-														<img src="images/home/new.png" class="new" alt="" style="width: 42px;">                                       <% end if %>   
-														<h2><%=price %> VNĐ</h2>
-														<p> <a href="product-detail.asp?productID=<%=id%>"><%=name%></a></p>
-											<% if inventory = "True" then %>
-											<a disable="disable" href="?option=add&ID=<%=id%>" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Thêm vào giỏ hàng</a>
-											<% else %>
-												<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-times"></i>Chưa có hàng</a>
-											<% end if %>
-													</div>
-												</div>
-											</div>
-										</div>
+	<div class="col-sm-4">
+		<div class="product-image-wrapper">
+			<div class="single-products">
+				<div class="productinfo text-center boxc">
+					<img class="contentc" src="<%=img%>" alt="">
+					<% if newArrival = "True" then %>
+					<img src="images/home/new.png" class="new" alt="" style="width: 42px;">                                       <% end if %>   
+					<h2><%=price %> VNĐ</h2>
+					<p> <a href="product-detail.asp?productID=<%=id%>"><%=name%></a></p>
+		<% if inventory = "True" then %>
+		<a href="?option=add&ID=<%=id%>" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Thêm vào giỏ hàng</a>
+		<% else %>
+			<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-times"></i>Chưa có hàng</a>
+		<% end if %>
+				</div>
+			</div>
+		</div>
+	</div>
 <%
 end function
 %>

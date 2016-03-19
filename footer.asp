@@ -136,7 +136,7 @@
 					});
 					});
 				})
-				$(document).on('click','a[disable=disable],a[href=#]',function(){
+				$(document).on('click','a[href=#]',function(){
 					return false
 				});
 				$(document).on('click','.add-to-cart',function(){
