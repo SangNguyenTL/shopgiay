@@ -3,7 +3,7 @@
 <!--#include file="function.asp" -->
 <%
 Session.Contents.Remove("vbRedirect")
-Session("vbRedirect") = GetFileName()
+Session("vbRedirect") = GetFileName()&"?"&Request.QueryString
 Dim the_title
 Dim title
 Dim classActive
@@ -34,6 +34,8 @@ elseif(GetFileName() = "cart.asp") then
 elseif(GetFileName() = "user-info.asp") then
 	title = "Thông tin cá nhân"
 	classActive6 = "active"
+elseif(GetFileName() = "brand-ds.asp") and Request.QueryString("brandName") <> "" then
+	title = "Thương hiệu "&Request.QueryString("brandName")
 End if
 the_title = title &" | Giày của tui"
 ' *** Logout the current user.
@@ -74,7 +76,7 @@ the_title = title &" | Giày của tui"
 					<div class="col-sm-6">
 						<div class="contactinfo">
 							<ul class="nav nav-pills">
-								<li><i class="fa fa-phone"></i> <%=sitePhone%></li>
+								<li><a href="#"><i class="fa fa-phone"></i> <%=sitePhone%></a></li>
 								<li><a href="mailto:siteEmail"><i class="fa fa-envelope"></i> <%=siteEmail%></a></li>
 							</ul>
 						</div>

@@ -1,20 +1,11 @@
 <!--#include file="header.asp" -->
 <%
-Dim rsSP__MMColParam
-rsSP__MMColParam = "1"
-If (Request.QueryString("brandName") <> "") Then 
-  rsSP__MMColParam = Request.QueryString("brandName")
-End If
-%>
-<%
 Dim rs1__MMColParam
 rs1__MMColParam = "1"
 If (Request.QueryString("brandName") <> "") Then 
   rs1__MMColParam = Request.QueryString("brandName")
 End If
-%>
 
-    <%
 Dim rs1
 Dim rs1_cmd
 Dim rs1_numRows
@@ -27,6 +18,14 @@ rs1_cmd.Parameters.Append rs1_cmd.CreateParameter("param1", 200, 1, 50, rs1__MMC
 
 Set rs1 = rs1_cmd.Execute
 rs1_numRows = 1
+rsm_numRows = 4
+
+if rs1.EOF or Request.QueryString("brandName") = "" then 
+	Response.Redirect("index.asp")
+else 
+
+
+
 %>
     <%
 Dim rsSP
@@ -37,30 +36,44 @@ Set rsSP_cmd = Server.CreateObject ("ADODB.Command")
 rsSP_cmd.ActiveConnection = MM_Connect_STRING
 rsSP_cmd.CommandText = "SELECT * FROM dbo.tb_product WHERE brandName = ?" 
 rsSP_cmd.Prepared = true
-rsSP_cmd.Parameters.Append rsSP_cmd.CreateParameter("param1", 200, 1, 50, rsSP__MMColParam) ' adVarChar
+rsSP_cmd.Parameters.Append rsSP_cmd.CreateParameter("param1", 200, 1, 50, rs1__MMColParam) ' adVarChar
 
 Set rsSP = rsSP_cmd.Execute
 rsSP_numRows = 9
+	if not rsSP.EOF then
+		brandName = rsSP.Fields.Item("brandName").Value
+	end if
+end if
 %>
 
 <section id="slider">
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
+	  <% imgsBrand = Split(rs1.Fields.Item("logo").value,",")
+	  if uBound(imgsBrand) > 0 then	  %>
         <div id="slider-carousel" class="carousel slide" data-ride="carousel">
           <ol class="carousel-indicators">
             <li data-target="#slider-carousel" data-slide-to="0" class="active"></li>
             <li data-target="#slider-carousel" data-slide-to="1"></li>
           </ol>
           <div class="carousel-inner">
+		  <% for each img in imgsBrand
+			if img = uBound(imgsBrand) then %>
             <div class="item active">
-              <div class="col-sm-11"> <img src="images/home/slide3.jpg" class="girl img-responsive" alt="" /> </div>
-            </div>
+			<%else%>
+			<div class="item">
+			<% end if %>
+              <img src="<%img%>" class="girl img-responsive" alt="" />
+			</div>
+		<% next %>
             <div class="item">
               <div class="col-sm-11"> <img src="images/home/slide2.jpg" class="girl img-responsive" alt="" /> </div>
             </div>
           </div>
-          <a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev"> <i class="fa fa-angle-left"></i> </a> <a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next"> <i class="fa fa-angle-right"></i> </a> </div>
+          <a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev"> <i class="fa fa-angle-left"></i> </a> <a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next"> <i class="fa fa-angle-right"></i> </a>
+		</div>
+		<% end if %>
       </div>
     </div>
   </div>
@@ -79,8 +92,9 @@ rsSP_numRows = 9
       </P>
     </tr>
 </table>
+  <% if not rsSP.EOF then %> 
     <div class="recommended_items"><!--new arrival for woman-->
-						<h2 class="title text-center">Một số sản phẩm thuộc thương hiệu <%=(rsSP.Fields.Item("brandName").Value)%></h2>
+						<h2 class="title text-center">Một số sản phẩm thuộc thương hiệu <%=brandName%></h2>
 						<P>
 						</BR>
 						
@@ -126,8 +140,9 @@ rsSP_numRows = 9
 							  <a class="right recommended-item-control" href="#recommended-item-carousel2" data-slide="next">
 								<i class="fa fa-angle-right"></i>
 							  </a>
-	  </div><!--/recommended_items-->
+	  </div><!--/recommended_items-->	<% end if %>
     </div>
+
   </div>
 </section>
 <!--#include file="footer.asp" -->

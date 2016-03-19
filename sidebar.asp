@@ -51,7 +51,7 @@ rsBrand_numRows = rsBrand_numRows + Repeat2__numRows
 							<div class="panel panel-default">
 								<div class="panel-heading">
 									<h4 class="panel-title">
-										<a class="collapsed" href="timkiem.asp?brandName=<%=(rsBrand.Fields.Item("brandName").Value)%>">
+										<a class="collapsed" href="brand-ds.asp?brandName=<%=(rsBrand.Fields.Item("brandName").Value)%>">
 											<span class="pull-right"><%=Count_total%></span><%=(rsBrand.Fields.Item("brandName").Value)%>
 										</a>
 									</h4>

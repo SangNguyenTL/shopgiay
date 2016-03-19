@@ -1,3 +1,101 @@
+
+<%
+Dim rsm
+Dim rsm_cmd
+Dim rsm_numRows
+
+Set rsm_cmd = Server.CreateObject ("ADODB.Command")
+rsm_cmd.ActiveConnection = MM_Connect_STRING
+rsm_cmd.CommandText = "SELECT * FROM dbo.tb_Brand order by newID()" 
+rsm_cmd.Prepared = true
+
+Set rsm = rsm_cmd.Execute
+
+%>
+<%
+Dim rsThuonghieu
+Dim rsThuonghieu_cmd
+Dim rsThuonghieu_numRows
+
+Set rsThuonghieu_cmd = Server.CreateObject ("ADODB.Command")
+rsThuonghieu_cmd.ActiveConnection = MM_Connect_STRING
+rsThuonghieu_cmd.CommandText = "SELECT * FROM dbo.tb_Brand" 
+rsThuonghieu_cmd.Prepared = true
+
+Set rsThuonghieu = rsThuonghieu_cmd.Execute
+rsThuonghieu_numRows = 0
+%>
+<%
+Dim rpm_numRows 
+Dim rpm_index
+
+rpm_numRows  = 4
+rpm_index = 0
+rsm_numRows = rsm_numRows + rpm_numRows 
+%>
+<%
+Dim MM_paramten 
+%>
+<%
+' *** Go To Record and Move To Record: create strings for maintaining URL and Form parameters
+
+Dim MM_keepNonee
+Dim MM_keepURLl
+Dim MM_keepFormm
+Dim MM_keepBothh
+
+Dim MM_removeListt
+Dim MM_itemm
+Dim MM_nextItemm
+
+' create the list of parameters which should not be maintained
+MM_removeListt = "&index="
+If (MM_paramten <> "") Then
+  MM_removeListt = MM_removeListt & "&" & MM_paramten & "="
+End If
+
+MM_keepURLl=""
+MM_keepFormm=""
+MM_keepBothh=""
+MM_keepNonee=""
+
+' add the URL parameters to the MM_keepURLl string
+For Each MM_itemm In Request.QueryString
+  MM_nextItemm = "&" & MM_itemm & "="
+  If (InStr(1,MM_removeListt,MM_nextItemm,1) = 0) Then
+    MM_keepURLl = MM_keepURLl & MM_nextItemm & Server.URLencode(Request.QueryString(MM_itemm))
+  End If
+Next
+
+' add the Form variables to the MM_keepFormm string
+For Each MM_itemm In Request.Form
+  MM_nextItemm = "&" & MM_itemm & "="
+  If (InStr(1,MM_removeListt,MM_nextItemm,1) = 0) Then
+    MM_keepFormm = MM_keepFormm & MM_nextItemm & Server.URLencode(Request.Form(MM_itemm))
+  End If
+Next
+
+' create the Form + URL string and remove the intial '&' from each of the strings
+MM_keepBothh = MM_keepURLl & MM_keepFormm
+If (MM_keepBothh <> "") Then 
+  MM_keepBothh = Right(MM_keepBothh, Len(MM_keepBothh) - 1)
+End If
+If (MM_keepURLl <> "")  Then
+  MM_keepURLl  = Right(MM_keepURLl, Len(MM_keepURLl) - 1)
+End If
+If (MM_keepFormm <> "") Then
+  MM_keepFormm = Right(MM_keepFormm, Len(MM_keepFormm) - 1)
+End If
+
+' a utility function used for adding additional parameters to these strings
+Function MM_joinChar(firstItem)
+  If (firstItem <> "") Then
+    MM_joinChar = "&"
+  Else
+    MM_joinChar = ""
+  End If
+End Function
+%>
 	<footer id="footer"><!--Footer-->
 		<div class="footer-top">
 				
@@ -10,64 +108,30 @@
 						</div>
 					</div>
 					<div class="col-sm-7">
+						<% While ((rpm_numRows  <> 0) AND (NOT rsm.EOF))%>
 						<div class="col-sm-3">
 							<div class="video-gallery text-center">
-								<a href="#">
+								<a href="brand-ds.asp?<%= Server.HTMLEncode(MM_keepNonee) & MM_joinChar(MM_keepNonee) & "brandName=" & rsm.Fields.Item("brandName").Value %>">
 									<div class="iframe-img">
-										<img src="images/home/van.jpg" alt="" />
+										<img src="<%=(rsm.Fields.Item("logo").Value)%>" alt="" />
 									</div>
 									<div class="overlay-icon">
 										<i class="fa fa-play-circle-o"></i>
 									</div>
 								</a>
-								<p>VAN</p>
-							</div>
-						</div>
-						
-						<div class="col-sm-3">
-							<div class="video-gallery text-center">
-								<a href="#">
-									<div class="iframe-img">
-										<img src="images/home/JOR.jpg" alt="" />
-									</div>
-									<div class="overlay-icon">
-										<i class="fa fa-play-circle-o"></i>
-									</div>
-								</a>
-								<p>JORDAN</p>
-								
-							</div>
-						</div>
-						
-						<div class="col-sm-3">
-							<div class="video-gallery text-center">
-								<a href="#">
-									<div class="iframe-img">
-										<img src="images/home/ADI.jpg" alt="" />
-									</div>
-									<div class="overlay-icon">
-										<i class="fa fa-play-circle-o"></i>
-									</div>
-								</a>
-								<p>ADIDAS</p>
+								<p><%=(rsm.Fields.Item("brandName").Value)%></p>
 							
 							</div>
 						</div>
-						
-						<div class="col-sm-3">
-							<div class="video-gallery text-center">
-								<a href="#">
-									<div class="iframe-img">
-										<img src="images/home/NIKE.png" alt="" />
-									</div>
-									<div class="overlay-icon">
-										<i class="fa fa-play-circle-o"></i>
-									</div>
-								</a>
-								<p>NIKE</p>
-							</div>
-						</div>
-					</div>
+
+                                    
+                                    <% 
+  rpm_index=rpm_index+1
+  rpm_numRows =rpm_numRows -1
+  rsm.MoveNext()
+Wend
+%>
+			</div>
 					<div class="col-sm-3">
 						<div class="address">
 							<img src="images/home/map.png" alt="" />
