@@ -49,13 +49,16 @@ elseif GetFileName() = "admin-feedback.asp"then
 elseif GetFileName() = "admin-panel.asp"then
 	namePage = "Trang Quản trị"
 	pageChild = "<li><a href=""admin-brand-list.asp""><i class=""fa fa-edit""></i> Quản trị</a></li>"
+elseif GetFileName() = "admin-comment.asp"then
+	namePage = "Quản lý bình luận"
+	pageChild = "<li><a href=""admin-brand-list.asp""><i class=""fa fa-edit""></i> Quản trị</a></li>"
 end if
 %>
 <html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Quản lý</title>
+  <title><%=namePage%></title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.5 -->
