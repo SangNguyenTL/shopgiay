@@ -42,7 +42,7 @@ if getItemCount() <> "0" then
 		<div class="container">
 			<div class="breadcrumbs">
 				<ol class="breadcrumb">
-				  <li><a href="#">Home</a></li>
+				  <li><a href="<%=linkHome%>">Home</a></li>
 				  <li class="active">Giỏ hàng</li>
 				</ol>
 			</div>
@@ -133,7 +133,7 @@ if getItemCount() <> "0" then
 </form><div>
 <%
 else
-%><div class="count">
+%><div class="countent">
 <div class="alert alert-warning container" >
 Giỏ hàng trống</div>
 	</div>
