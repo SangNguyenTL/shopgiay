@@ -199,19 +199,8 @@ Wend
 						$(this).attr("href",'#');
 					});
 					});
-				})
-				$(document).on('click','a[href=#]',function(){
-					return false
-				});
-				$(document).on('click','.add-to-cart',function(){
-					var url = $(this).attr("data-href",url);
-					$.get($(this).attr("data-href"),{},function(result){
-						var success =  $($.parseHTML(result)).find(".count.badge").text();
-						console.log(success);
-						$(".count.badge").removeClass("hidden").text(success)
-					});
-					return false
-				});
+				})		
+
 </script>
 <!--script type="text/javascript">	
 				$('.search_box #find').blur(function() {
@@ -224,17 +213,65 @@ Wend
 				});
 </script-->
 <% end if %>
-<script type="text/javascript">
-					$('.add-to-cart').each(function(){
-						var url = $(this).attr("href");
-						$(this).attr("data-href",url);
-						$(this).attr("href",'#');
-					});
-				
-</script>
 <script src="js/jquery.scrollUp.min.js"></script>
 <script src="js/price-range.js"></script>
 <script src="js/jquery.prettyPhoto.js"></script>
 <script src="js/main.js"></script>
+
+<script type="text/javascript">
+
+	var changeHl = ".cart_quantity_down,.cart_quantity_up,.add-to-cart,.cart_quantity_delete,.del-all".split(",");
+				$.each(changeHl,function(key,item){
+					$(item).each(function(){
+						var url = $(this).attr("href");
+						$(this).attr("data-href",url);
+						$(this).attr("href",'#');
+					})
+				});
+
+				$(document).on('click','.add-to-cart',function(){
+					var url = $(this).attr("data-href",url);
+					$.get($(this).attr("data-href"),{},function(result){
+						var success =  $($.parseHTML(result)).find(".count.badge").text();
+						
+						$(".count.badge").removeClass("hidden").text(success)
+					});
+					return false
+				});
+<% IF GetFileName() = "cart.asp" then %>
+				$(document).on('click','.cart_quantity_up,.cart_quantity_down',function(){
+					var url = $(this).attr("data-href",url);
+					var $this = $(this);
+					$.get($(this).attr("data-href"),{},function(result){
+						var id = "[name="+$this.closest('.cart_quantity_button').find("input").attr("name")+"]";
+						result = $($.parseHTML(result));
+						var qty = result.find(id).val();
+						if(qty == 0 || qty == ""){
+							$this.closest('tr').remove();
+						}else{
+							$this.closest('.cart_quantity_button').find("input").val(qty);
+							$this.closest('tr').find(".cart_total_price").text(result.find(id).closest('tr').find(".cart_total_price").text());
+						}
+						$(".total_area span:first,.total_area li:nth-child(3) span").text(result.find(".total_area span:first").text());
+					});
+					return false
+				});
+				$(document).on('click','.cart_quantity_delete,.del-all',function(){
+					var url = $(this).attr("data-href",url);
+					var $this = $(this);
+					$.get($(this).attr("data-href"),{},function(result){
+						result = $($.parseHTML(result));
+						$(".content").html(result.find(".content").html());
+					});
+					
+					return false
+				});
+<% end if %>
+				$(document).on('click','a[href=#]',function(){
+					return false
+				});
+
+</script>
+
 </body>
 <!-- InstanceEnd --></html>

@@ -36,6 +36,7 @@ end if
 Dim quantityrsBaskettoCart
 if getItemCount() <> "0" then
 %>
+<div class="content">
 <form method="post" action="?option=update" >
 	<section id="cart_items">
 		<div class="container">
@@ -122,19 +123,20 @@ if getItemCount() <> "0" then
 							<li>Thành tiền <span><%=amountAll%></span></li>
 						</ul>
 							<button class="btn btn-default update" name="update" type="submit">Cập nhật</button>
-							<a class="btn btn-default check_out" href="?option=clear">Xóa hết</a>
+							<a class="btn btn-default check_out del-all" href="?option=clear">Xóa hết</a>
 							<a class="btn btn-default check_out" href="checkout.asp">Tiếp tục</a>
 					</div>
 				</div>
 			</div>
 		</div>
 	</section><!--/#do_action-->
-</form>
+</form><div>
 <%
 else
-%>
+%><div class="count">
 <div class="alert alert-warning container" >
 Giỏ hàng trống</div>
+	</div>
 <%
  end if %>
 <!--#include file="footer.asp"-->
