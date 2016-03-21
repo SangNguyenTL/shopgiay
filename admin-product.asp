@@ -25,7 +25,6 @@ inventory = CInt(Request.Form("radioInventory"))
 newArrival = CInt(Request.Form("optionsNewArrival"))
 prodescrible = HTMLEncode(Request.Form("txtDes"))
 ' Create the FileUploader
-
 If (Request.QueryString("action") = "") or (Request.QueryString("action") = "add") then
 	MM_action = "add"
 	MM_editRedirectUrl = "admin-list-product.asp"
@@ -34,7 +33,6 @@ If (Request.QueryString("action") = "") or (Request.QueryString("action") = "add
 	If (Request.QueryString <> "") Then
 	  MM_productAction = MM_productAction & "?" & HTMLEncode("action=add")
 	End If
-
 	If (CStr(Request("MM_action")) = "add") Then
 		If Len(namePro) < 6 or Len(namePro) > 100 then
 			Session("statusProduct") = "Tên sản phẩm phải từ 6 đến 100 ký tự!"
@@ -85,7 +83,6 @@ Elseif Request.QueryString("action") = "edit" then
 	Recordset1_cmd.ActiveConnection = MM_Connect_STRING
 	Recordset1_cmd.CommandText = "SELECT * FROM dbo.tb_product WHERE productID = '"&proID&"' " 
 	Recordset1_cmd.Prepared = true
-
 	Set Recordset1 = Recordset1_cmd.Execute
 	Recordset1_numRows = 0
 	' khai bao gia tri cho cac bien cua mat hang
@@ -106,16 +103,13 @@ Elseif Request.QueryString("action") = "edit" then
 			Session("statusProduct") = "Trạng thái sản phẩm không được để trống!"
 		Else
 			Dim MM_editCmd
-
 			Set MM_editCmd = Server.CreateObject ("ADODB.Command")
 			MM_editCmd.ActiveConnection = MM_Connect_STRING
 			MM_editCmd.CommandText = "UPDATE dbo.tb_product SET proName = N'"&namePro&"', image = N'"&image&"', brandName = N'"&brandName&"', price = "&price&", prodescrible = N'"&prodescrible&"', inventory = '"&inventory&"', newArrival = '"&newArrival&"' WHERE productID = '"&proID&"' " 
 			MM_editCmd.Prepared = true
 			MM_editCmd.Execute
 			MM_editCmd.ActiveConnection.Close
-
 			' append the query string to the redirect URL
-
 			If (Request.QueryString <> "") Then
 			  If (InStr(1, MM_editRedirectUrl, "?", vbTextCompare) = 0) Then
 				MM_editRedirectUrl = MM_editRedirectUrl & "?" & Request.QueryString
@@ -146,12 +140,10 @@ End If
 Dim Recordset2
 Dim Recordset2_cmd
 Dim Recordset2_numRows
-
 Set Recordset2_cmd = Server.CreateObject ("ADODB.Command")
 Recordset2_cmd.ActiveConnection = MM_Connect_STRING
 Recordset2_cmd.CommandText = "SELECT * FROM dbo.tb_Brand" 
 Recordset2_cmd.Prepared = true
-
 Set Recordset2 = Recordset2_cmd.Execute
 Recordset2_numRows = 0
 %>
@@ -223,7 +215,6 @@ If (Recordset2.CursorType > 0) Then
 Else
   Recordset2.Requery
 End If
-
 If inventory = "True" then
 	checkIve1 = "checked"
 End If
@@ -290,4 +281,3 @@ End If
      </section>
     <!-- /.content --> 
 <!--#include file="footer-admin.asp" -->
-
