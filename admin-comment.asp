@@ -6,7 +6,7 @@ Dim comment_numRows
 
 Set comment_cmd = Server.CreateObject ("ADODB.Command")
 comment_cmd.ActiveConnection = MM_Connect_STRING
-comment_cmd.CommandText = "SELECT * FROM dbo.tb_comment as cm Left Join dbo.tb_user as us on us.userID = cm.userID" 
+comment_cmd.CommandText = "SELECT * FROM dbo.tb_comment as cm Left Join dbo.tb_user as us on us.userID = cm.userID left join dbo.tb_product as pr on pr.productId = cm.proID " 
 comment_cmd.Prepared = true
 
 Set comment = comment_cmd.Execute
@@ -308,6 +308,9 @@ End If
             </div>
             <!-- /.box-header -->
             <div class="box-body table-responsive no-padding">
+			<p class="alert alert-warning" style="
+    margin: 10px;
+"> (*) Bình luận này có phần trả lời, khi xóa sẽ mất phần trả lời </p>
     <%
 Dim Repeat1__numRows
 Dim Repeat1__index
@@ -319,6 +322,7 @@ comment_numRows = comment_numRows + Repeat1__numRows
 				<table class="table table-hover">
 					<thead>
                       <tr>
+                        <th width="260">Loại</th>
                         <th width="260">Tên người gửi</th>
                         <th width="260">Email</th>
                         <th width="260">Thời gian</th>                     
@@ -332,20 +336,32 @@ While ((Repeat1__numRows <> 0) AND (NOT comment.EOF))
 
 %>                  
 					  <tr>
-                      	<td><%=(comment.Fields.Item("fullName").Value)%></td>
+						<td><%if (comment.Fields.Item("parentId").Value <> "") then %>
+							Hỏi
+						<%else%>
+							Trả lời
+						<%end if %></td>
+                      	<td><a href="user-info.asp?email=<%=comment.Fields.Item("email").Value%>"><%=(comment.Fields.Item("fullName").Value)%><%if (comment.Fields.Item("parentId").Value <> ""	) then%>
+						<%else%>
+						(*)
+						<%end if %></a></td>
 						<td><%=(comment.Fields.Item("email").Value)%></td>
                         <td><span><%=(comment.Fields.Item("datePost").Value)%></span></td>
 						<td>
+
                         	<div class="btn-group">
-                            	<button  data-toggle="modal" data-target="#cm_ID-<%=(comment.Fields.Item("cm_ID").Value)%>" type="submit" class="btn btn-primary" style="width: 80px;">Xem</button>	
-                                <button type="submit" class="btn btn-danger delCom" style="width: 80px;" value="<%=(comment.Fields.Item("cm_ID").Value)%>">Xóa</button>
+                            	<a href="#" data-toggle="modal" data-target="#cm_ID-<%=(comment.Fields.Item("cm_ID").Value)%>" class="btn btn-primary" style="width: 80px;">Xem</a>	
+                            	<a href="?delCommentID=<%=(comment.Fields.Item("cm_ID").Value)%>" class="btn btn-danger" style="width: 80px;">Xóa</a>	
                              </div>
+                        <input type="hidden" name="delCommentID" value="<%=(comment.Fields.Item("cm_ID").Value)%>">
+                        </form>
                        </td>
                        </tr>
                        <div class="modal fade" id="cm_ID-<%=(comment.Fields.Item("cm_ID").Value)%>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                               <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                   <div class="modal-header">
+									Tại <a href="product-detail.asp?productID=<%=comment.Fields.Item("proID").Value%>#<%=comment.Fields.Item("cm_ID").Value%>"><%=comment.Fields.Item("proName").Value%></a>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                   </div>
                                   <div class="modal-body">
@@ -362,24 +378,23 @@ While ((Repeat1__numRows <> 0) AND (NOT comment.EOF))
   Repeat1__numRows=Repeat1__numRows-1
   comment.MoveNext()
 Wend
+comment.Close()
+Set comment = Nothing
 %>
                     </tbody>
                   </table>
+        <div class="col-sm-7">
+        <div class="dataTables_paginate paging_simple_numbers">
+        <ul class="pagination">
+        <% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_moveFirst%>">Đầu tiên</a></li><% End If %>
+        <% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_movePrev%>">Trước</a></li><% End If %>
+        <% If Not MM_atTotal Then %><li class="paginate_button "><a href="<%=MM_moveNext%>">Kế</a></li><% End If %>
+		<% If Not MM_atTotal Then %><li class="paginate_button"><a href="<%=MM_moveLast%>">Cuối</a></li><% End If %>
+        </ul>
+        </div>
+        </div>
+	  </div>
             </div>
-				<ul class="nav navbar-nav">
-				<% If MM_offset <> 0 Then %>
-				  <li><a href="<%=MM_moveFirst%>">Trang đầu</a></li>
-				<% End If 
-				If MM_offset <> 0 Then %>
-				  <li><a href="<%=MM_movePrev%>">Trang trước</a></li>
-				<% End If 
-				If Not MM_atTotal Then %>
-				  <li><a href="<%=MM_moveNext%>">Trang sau</a></li>
-				<% End If 
-				If Not MM_atTotal Then %>
-				  <li><a href="<%=MM_moveLast%>">Trang cuối</a></li>
-				<% End If %>
-				</ul>
             <!-- /.box-body -->
           </div>
           <!-- /.box -->
@@ -388,20 +403,4 @@ Wend
       <!-- /.row -->
 </section>
 <!--#include file="footer-admin.asp" -->
-<%
-comment.Close()
-Set comment = Nothing
-%>
-<script type="text/javascript">
-$('.delCom').on('click',function(){
-	var $this = $(this);
-	cm_ID = $this.val();
-	$.post('/shopgiay/ajaxdelCom.asp',{
-		cm_ID: cm_ID,
-		MM_delete: 'delCom'
-	},function(){
-		alert('Xóa thành công bình luận có mã số = '+cm_ID);
-		$this.closest('tr').hide('slow');
-	});
-});
-</script>
+

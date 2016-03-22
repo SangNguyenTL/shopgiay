@@ -5,12 +5,11 @@ rsUser__MMColParam = Replace(Session.Contents("MM_rsEmail"),"'","&#39;")
 If (Request.QueryString("email") <> "") Then 
   rsUser__MMColParam = Replace(Request.QueryString("email"),"'","&#39;")
 End If
-
-if (Session("MM_rsEmail") = "" and Request.QueryString = "") or Session("MM_UserID") = "1" then
-	Response.Redirect("index.asp")
+if(Session("MM_UserAuthorization") = "False") then
+	if(Request.QueryString("email") = "") then
+		Response.Redirect("index.asp")
+	end if
 end if
-
-
 Dim MM_editUser
 Dim MM_editUserAction
 Dim plusQuery
@@ -42,24 +41,26 @@ If (CStr(Request("MM_update")) = "frm1") Then
 			Session("Updatestatus")="Địa chỉ phải nằm trong khoảng 200 ký tự"
 		elseif Role > 1 or Role < 0 then
 	
-			Session("Updatestatus")="Quyền phải là 1(Admin) hoặc 0(thành viên)"
+			Session("Updatestatus")="Quyền phải là 1(Quản trị) hoặc 0(thành viên)"
 		else	
 			if Len(passW) <> 0 then
 				passW = "passW = '"&passW&"',"
 			else
 				passW = ""
 			end if
-			if (Session("MM_UserAuthorization")) = "True" then
+			if (Session("MM_UserAuthorization")) = "True" and Session("MM_UserID") <> "1" then
 				plusQuery = ", [role]= "&Role
+				
 			end if
 			Set MM_editUser = Server.CreateObject ("ADODB.Command")
 			MM_editUser.ActiveConnection = MM_Connect_STRING
-			MM_editUser.CommandText = "UPDATE dbo.tb_user SET "&passW&" fullName = N'"&fullName&"', phone = '"&phone&"', Address = N'"&Address&"'"&plusQuery&" WHERE email = '"& rsUser__MMColParam &"' " 
+			MM_editUser.CommandText = "UPDATE dbo.tb_user SET "&passW&" fullName = N'"&fullName&"', phone = '"&phone&"', Address = N'"&Address&"'"&plusQuery&" WHERE email = '"& rsUser__MMColParam&"' " 
 			'MM_editUser.Parameters.Append MM_editUser.CreateParameter("param1", 5, 1, -1, CInt(Request.Form("MM_recordId"))) ' adDouble
 			
 			MM_editUser.Prepared = true
 			MM_editUser.Execute
 			MM_editUser.ActiveConnection.Close
+			
 			Session("Updatestatus") = "Cập nhật thành công!"
 			' append the query string to the redirect URL
 			Dim MM_editRedirectUrl
@@ -94,6 +95,14 @@ if (rsUser.EOF or rsUser.BOF) then
 end if
 Dim checkRole1
 Dim checkRole2
+If (CStr(Request("MM_update")) = "frm1") Then
+if CInt(Session("MM_UserID")) = CInt(rsUser.Fields.Item("userId").value)  then
+	Session("MM_Username") = fullName
+	Session("MM_Userphone") = phone
+	Session("MM_Useraddress") = Address
+	Session("MM_UserAuthorization") = rsUser.Fields.Item("role").value
+end if
+end if
 if rsUser.Fields.Item("role") = "False" then
 	txtRole = "Thành viên"
 	checkRole1 = "selected"
@@ -141,6 +150,7 @@ end if
                                       <input type="email" value="<%=(rsUser.Fields.Item("email").Value)%>" class="form-control" id="email" disabled>
                                     </div>
                                   </div>
+								   <% if Session("MM_UserAuthorization") = "True" or rsUser.Fields.Item("userId").value = Session("MM_UserId") then %>
                                   <div class="form-group">
                                     <label class="control-label col-sm-4" for="pwd" >Mật khẩu:</label>
                                     <div class="col-sm-6"> 
@@ -152,7 +162,8 @@ end if
                                     <div class="col-sm-6"> 
                                       <input name="txtpass2" type="password" class="form-control" >
                                     </div>
-                			  </div>      
+                			  </div>  
+<% end if %>							  
 					
                 </div>
                 <div class="col-md-6">
@@ -166,7 +177,7 @@ end if
                                   <div class="form-group">
                                     <label class="control-label col-sm-4" for="pwd">Số điện thoại:</label>
                                     <div class="col-sm-6"> 
-                                      <input name="txtphone" type="text" class="form-control" required pattern="[\d]{8,11}" title="SĐT phải là số (8->11 số)" value="<%=(rsUser.Fields.Item("phone").Value)%>" >
+                                      <input name="txtphone" type="tel" class="form-control" required pattern="[\d]{8,11}" title="SĐT phải là số (8->11 số)" value="<%=(rsUser.Fields.Item("phone").Value)%>" >
                                     </div>
                                   </div>
                                    <div class="form-group">
@@ -185,6 +196,8 @@ end if
 									  </select>
                                     </div>
 									<% 
+									elseif  (rsUser.Fields.Item("userId").Value) = "1" then
+										Response.Write("<div class=""col-sm-6""><div class=""form-control"">Siêu "&txtRole&"</div></div>")
 									else
 										Response.Write("<div class=""col-sm-6""><div class=""form-control"">"&txtRole&"</div></div>")
 									end if %>

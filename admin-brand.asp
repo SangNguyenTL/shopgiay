@@ -11,75 +11,83 @@ Dim logo
 Dim brandDS
 Dim checkBrandName
 Dim ckBrandName
+Dim statusBrand
 if (CStr(Request("MM_action")) <> "") then
 
 	brandName = HTMLEncode(Request("txtBrand"))
 	logo = HTMLEncode(Request("ProPic"))
 	brandDS = HTMLEncode(Request("txtDes"))
-	
-	set checkBrandName = Server.CreateObject("ADODB.Command")
-	checkBrandName.ActiveConnection = MM_Connect_STRING
-	checkBrandName.CommandText = "Select brandName FROM dbo.tb_Brand WHERE brandName = '"&brandName&"' "
-	checkBrandName.Prepared = True
-	set ckBrandName = checkBrandName.Execute
-	IF (Not ckBrandName.EOF) OR (Not ckBrandName.BOF) then
+	if CStr(Request("MM_action")) = "add" then
+		set checkBrandName = Server.CreateObject("ADODB.Command")
+		checkBrandName.ActiveConnection = MM_Connect_STRING
+		checkBrandName.CommandText = "Select brandName FROM dbo.tb_Brand WHERE brandName = '"&brandName&"' "
+		checkBrandName.Prepared = True
+		set ckBrandName = checkBrandName.Execute
+		IF (Not ckBrandName.EOF) OR (Not ckBrandName.BOF) then
+
+			statusBrand = "False"
+		end if
+	elseif CStr(Request("MM_action")) = "edit" then
+		statusBrand = "True"
+	end if
+
+	if statusBrand = "False" then
 		Session("statusBrand") = "Thương hiệu này đã tồn tại xin bạn hãy nhập một thương hiệu khác"
+	elseif Len(brandName) < 1 OR Len(brandName) > 50 then
+		Session("statusBrand") = "Tên thương hiệu phải nằm trong khoảng 50 ký tự!"
+	elseif Len(logo) < 3 OR Len(logo) > 250 then
+		Session("statusBrand") = "Ảnh thương hiệu phải nằm trong khoảng từ 3 đến 250 ký tự!"
+	elseif Len(brandDS) > 3000 then
+		Session("statusBrand") = "Mô tả về thương hiệu phải nằm trong khoảng 3000 ký tự!"
 	else
-		if Len(brandName) < 1 OR Len(brandName) > 50 then
-			Session("statusBrand") = "Tên thương hiệu phải nằm trong khoảng 50 ký tự!"
-		elseif Len(logo) < 3 OR Len(logo) > 250 then
-			Session("statusBrand") = "Ảnh thương hiệu phải nằm trong khoảng từ 3 đến 250 ký tự!"
-		elseif Len(brandDS) > 3000 then
-			Session("statusBrand") = "Mô tả về thương hiệu phải nằm trong khoảng 3000 ký tự!"
+		if (CStr(Request.Querystring("brandName")) = "") then
+			MM_editRedirectUrl = "admin-brand-list.asp"
+			MM_addbrand = MM_addbrand & "?" & HTMLEncode("action=add")
+			If (CStr(Request("MM_action")) = "add") Then
+				' execute the insert
+				Dim MM_insertBrand
+
+				Set MM_insertBrand = Server.CreateObject ("ADODB.Command")
+				MM_insertBrand.ActiveConnection = MM_Connect_STRING
+				MM_insertBrand.CommandText = "INSERT INTO dbo.tb_Brand (brandName, logo, brandDS) VALUES (N'"&brandName&"', N'"&logo&"', N'"&brandDS&"')" 
+				MM_insertBrand.Prepared = true
+				MM_insertBrand.Execute
+				MM_insertBrand.ActiveConnection.Close
+
+				' append the query string to the redirect URL
+				Response.Redirect(MM_editRedirectUrl)
+			End If
 		else
-			if (CStr(Request.Querystring("brandName")) = "") then
-				MM_editRedirectUrl = "admin-brand-list.asp"
-				MM_addbrand = MM_addbrand & "?" & HTMLEncode("action=add")
-				If (CStr(Request("MM_action")) = "add") Then
-					' execute the insert
-					Dim MM_insertBrand
+			MM_addbrand = MM_addbrand & "?" & HTMLEncode("action=edit")
+			If (CStr(Request("MM_action")) = "edit") Then
+				Dim MM_editBrand
 
-					Set MM_insertBrand = Server.CreateObject ("ADODB.Command")
-					MM_insertBrand.ActiveConnection = MM_Connect_STRING
-					MM_insertBrand.CommandText = "INSERT INTO dbo.tb_Brand (brandName, logo, brandDS) VALUES (N'"&brandName&"', N'"&logo&"', N'"&brandDS&"')" 
-					MM_insertBrand.Prepared = true
-					MM_insertBrand.Execute
-					MM_insertBrand.ActiveConnection.Close
-
-					' append the query string to the redirect URL
-					Response.Redirect(MM_editRedirectUrl)
+				Set MM_editBrand = Server.CreateObject ("ADODB.Command")
+				MM_editBrand.ActiveConnection = MM_Connect_STRING
+				MM_editBrand.CommandText = "UPDATE dbo.tb_Brand SET logo = N'"&logo&"', brandDS = N'"&brandDS&"' WHERE brandName = '"&HTMLEncode(Request.Querystring("brandName"))&"'" 
+				MM_editBrand.Execute
+				MM_editBrand.ActiveConnection.Close
+				Session("statusBrand") = "Cập nhật thành công"
+				MM_editRedirectUrl = GetFileName()
+				If (Request.QueryString <> "") Then
+				  If (InStr(1, MM_editRedirectUrl, "?", vbTextCompare) = 0) Then
+					MM_editRedirectUrl = MM_editRedirectUrl & "?" & Request.QueryString
+				  Else
+					MM_editRedirectUrl = MM_editRedirectUrl & "&" & Request.QueryString
+				  End If
 				End If
-			else
-				MM_addbrand = MM_addbrand & "?" & HTMLEncode("action=edit")
-				If (CStr(Request("MM_action")) = "edit") Then
-					Dim MM_editBrand
-
-					Set MM_editBrand = Server.CreateObject ("ADODB.Command")
-					MM_editBrand.ActiveConnection = MM_Connect_STRING
-					MM_editBrand.CommandText = "UPDATE dbo.tb_Brand SET brandName = N'"&brandName&"', logo = N'"&logo&"', brandDS = N'"&brandDS&"' WHERE brandName = '"&HTMLEncode(Request.Querystring("brandName"))&"'" 
-					MM_editBrand.Execute
-					MM_editBrand.ActiveConnection.Close
-					Session("statusBrand") = "Cập nhật thành công"
-					MM_editRedirectUrl = GetFileName()
-					If (Request.QueryString <> "") Then
-					  If (InStr(1, MM_editRedirectUrl, "?", vbTextCompare) = 0) Then
-						MM_editRedirectUrl = MM_editRedirectUrl & "?" & Request.QueryString
-					  Else
-						MM_editRedirectUrl = MM_editRedirectUrl & "&" & Request.QueryString
-					  End If
-					End If
-					Response.Redirect(MM_editRedirectUrl)
-				end if
+				Response.Redirect(MM_editRedirectUrl)
 			end if
 		end if
-	End If
+	end if
 	ckBrandName.Close()
 	set checkBrandName = Nothing
 end if
-
+Dim class_dis
 if (CStr(Request.Querystring("brandName")) <> "") then
 	MM_action = "edit"
 	buttonForm = "Cập nhật"
+	class_dis = "disabled"
 else
 	MM_action = "add"
 	buttonForm = "Thêm"
@@ -144,7 +152,7 @@ end if
 			<form ACTION="<%=MM_addbrand%>" METHOD="POST" id="form1" role="form" name="form1">
 				 <div class="form-group  col-xs-12">
 					<label>Tên thương hiệu(*)</label>
-						<input name="txtBrand" type="text" class="form-control" placeholder="Tên thương hiệu từ 6 đến 50 ký tự" pattern=".{1,50}" title="Tên thương hiệu phải nằm trong khoảng 50 ký tự" required value="<%=brandName%>">
+						<input name="txtBrand" type="text" <%=class_dis%>  class="form-control" placeholder="Tên thương hiệu từ 6 đến 50 ký tự" pattern=".{1,50}" title="Tên thương hiệu phải nằm trong khoảng 50 ký tự" required value="<%=brandName%>">
 				</div>
 				<div class="form-group col-xs-12">
 					 <label>Logo(*)</label>

@@ -39,8 +39,9 @@ rsHangNgauNhien_numRows = 6
 										%><div class="item">
 										<% end if %>
 												<div class="col-sm-6">
-													<h1><%=nameProduct%></h1>
-													<h2><%=brandName%></h2>
+													<h1><a href="product-detail.asp?productID=<%=id%>"><%=nameProduct%></a></h1>
+													<h2><a href="brand-ds.asp?brandName=<%=brandName%>"><%=brandName%></a>
+													</h2>
 													<p><%=rsHangNgauNhien.Fields.Item("prodescrible").Value%></p>
 											<% if inventory = "True" then %>
 											<a href="?option=add&ID=<%=id%>" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Thêm vào giỏ hàng</a>

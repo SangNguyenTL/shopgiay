@@ -1,36 +1,24 @@
 <!--#include file="header-admin.asp" -->
    
     <%
-Dim rsProduct
-Dim rsProduct_cmd
-Dim rsProduct_numRows
 Dim rsCount_total
-
-
-Set rsProduct_cmd = Server.CreateObject ("ADODB.Command")
-rsProduct_cmd.ActiveConnection = MM_Connect_STRING
-rsProduct_cmd.CommandText = "SELECT Count(*) as 'NumPro' FROM dbo.tb_product " 
-rsProduct_cmd.Prepared = true
-
-Set rsProduct = rsProduct_cmd.Execute
-rsProduct_numRows = 10
-
-rsCount_total = rsProduct.Fields.Item("NumPro").Value
+Dim quantityQuery2
+set quantityQuery2 = getValuequery("Count(*) as 'NumPro'","dbo.tb_product","where inventory = 0")
+rsCount_total = quantityQuery2.Item("NumPro")
+set quantityQuery2 = nothing
 %>
 <%
-Dim rsCountFeedback
-Dim rsCountFeedback_cmd
-Dim rsCountFeedback_numRows
+
 Dim	rsCountF
+set quantityQuery2 = getValuequery("Count(*) as 'NumFeed'","dbo.tb_feedback","where status = 0")
+rsCountF = quantityQuery2.Item("NumFeed")
+set quantityQuery2 = nothing
 
-Set rsCountFeedback_cmd = Server.CreateObject ("ADODB.Command")
-rsCountFeedback_cmd.ActiveConnection = MM_Connect_STRING
-rsCountFeedback_cmd.CommandText = "SELECT Count(*) as 'NumFeed' FROM dbo.tb_feedback" 
-rsCountFeedback_cmd.Prepared = true
+Dim	rsCountO
+set quantityQuery2 = getValuequery("Count(*) as 'NumO'","dbo.tb_order","where status = 0")
+rsCountO = quantityQuery2.Item("NumO")
+set quantityQuery2 = nothing
 
-Set rsCountFeedback = rsCountFeedback_cmd.Execute
-rsCountFeedback_numRows = 10
-rsCountF=rsCountFeedback.Fields.Item("NumFeed").Value
 %>
 <!-- Content Header (Page header) -->
 
@@ -48,14 +36,6 @@ rsCountF=rsCountFeedback.Fields.Item("NumFeed").Value
             <div class="box-header">
               <h3 class="box-title">Thông báo</h3>
 
-              <div class="box-tools">
-                <div class="input-group input-group-sm" style="width: 150px;">
-               
-                  <div class="input-group-btn">
-                 
-                  </div>
-                </div>
-              </div>
             </div>
             <!-- /.box-header -->
             <div class="box-body table-responsive no-padding">
@@ -63,8 +43,8 @@ rsCountF=rsCountFeedback.Fields.Item("NumFeed").Value
                 <tbody><tr>
 					<div class="callout callout-warning">
 					<h4>Đơn hàng</h4>
-					<p>Có ?? đơn hàng chưa xử lý.
-					<a href="" class="small-box-footer pull-right">
+					<p>Có <%=rsCountO%> đơn hàng chưa xử lý.
+					<a href="admin-order.asp?status=0" class="small-box-footer pull-right">
 					 <i class="fa  fa-hand-o-right "></i>
 					</a></p>
 					</div>
@@ -72,7 +52,7 @@ rsCountF=rsCountFeedback.Fields.Item("NumFeed").Value
                 <tr>
 					<div class="callout callout-info">
 					<h4>Phản hồi</h4>
-					<p>Có <%= rsCountF %> feedback mới chưa được trả lời. 
+					<p>Có <%=rsCountF %> phản hồi mới chưa được trả lời. 
 					<a href="admin-feedback.asp?status=False" class="small-box-footer pull-right">
 					 <i class="fa  fa-hand-o-right "></i>
 					</a></p>
@@ -81,7 +61,7 @@ rsCountF=rsCountFeedback.Fields.Item("NumFeed").Value
                 <tr>
 					<div class="callout callout-danger">
 					<h4>Sản phẩm</h4>
-					<p>Có <%= rsCount_total%> sản phẩm đã hết hàng.
+					<p>Có <%=rsCount_total%> sản phẩm đã hết hàng.
 					<a href="admin-list-product.asp?inventory=False" class="small-box-footer pull-right">
 					 <i class="fa  fa-hand-o-right "></i>
 					</a></p>
@@ -103,7 +83,3 @@ rsCountF=rsCountFeedback.Fields.Item("NumFeed").Value
     </section>
     <!-- /.content --> 
 <!--#include file="footer-admin.asp" -->
-<%
-rsProduct.Close()
-Set rsProduct = Nothing
-%>

@@ -34,6 +34,10 @@ MM_editAction = CStr(Request.ServerVariables("SCRIPT_NAME"))
 If (Request.QueryString <> "") Then
   MM_editAction = MM_editAction & "?" & HTMLEncode(Request.QueryString)
 End If
+MM_LoginAction = Request.ServerVariables("URL")
+If Request.QueryString <> "" Then
+	MM_LoginAction = MM_LoginAction + "?" + HTMLEncode(Request.QueryString)
+end if
 ' boolean to abort record edit
 Dim MM_abortLoginEdit
 MM_abortLoginEdit = false
@@ -103,8 +107,6 @@ If (CStr(Request("formRg")) = "ok") Then
 End If
 	' *** Validate request to log in to this site.
 	if Request("formLogin") <> "" then 
-		MM_LoginAction = Request.ServerVariables("URL")&"?redirect="&Session("vbRedirect")
-		If Request.QueryString <> "" Then MM_LoginAction = MM_LoginAction + "?" + HTMLEncode(Request.QueryString)
 		MM_valUsername = CStr(Request.Form("txtEmail"))
 		If MM_valUsername <> "" Then
 		  Dim MM_fldUserAuthorization
@@ -144,8 +146,8 @@ End If
 			  Session("MM_UserAuthorization") = ""
 			End If
 		   
-			if Session("vbRedirect") <> "" then 'Dieu huong co muc dich
-				 Response.Redirect(Session("vbRedirect"))
+			if Request.QueryString("vbRedirect") <> "" then 'Dieu huong co muc dich
+				 Response.Redirect(redirectContent(Request.QueryString("vbRedirect")))
 			else
 				Response.Redirect(MM_redirectLoginSuccess)
 			end if
@@ -157,27 +159,36 @@ End If
 		End if
 	end if
 end if
-MM_Logout = CStr(Request.ServerVariables("URL")) & "?MM_Logoutnow=1"
+
+Function redirectContent(pageRedirect)
+  if (pageRedirect = "") Then pageRedirect = CStr(Request.ServerVariables("URL"))
+  If (InStr(1, UC_redirectPage, "?", vbTextCompare) = 0 And Request.QueryString <> "") Then
+    MM_newQS = "?"
+    For Each Item In Request.QueryString
+      If (Item <> "vbRedirect") and (Item <> "MM_Logoutnow") Then
+        If (Len(MM_newQS) > 1) Then MM_newQS = MM_newQS & "&"
+        MM_newQS = MM_newQS & Item & "=" & Server.URLencode(Request.QueryString(Item))
+      End If
+    Next
+    if (Len(MM_newQS) > 1) Then pageRedirect = pageRedirect & MM_newQS
+	redirectContent = pageRedirect
+  End If
+end function
+
+
+MM_Logout = CStr(Request.ServerVariables("URL")) & "?MM_Logoutnow=1&vbRedirect="&GetFileName()&"&"&Request.ServerVariables("QUERY_STRING")
 If (CStr(Request("MM_Logoutnow")) = "1") Then
   Session.Contents.Remove("MM_Username")
   Session.Contents.Remove("MM_rsEmail")
   Session.Contents.Remove("MM_UserAuthorization")
   Session.Contents.Remove("MM_UserID")
+  Session.Contents.Remove("MM_Userphone")
+  Session.Contents.Remove("MM_Useraddress")
   MM_logoutRedirectPage = "index.asp"
   ' redirect with URL parameters (remove the "MM_Logoutnow" query param).
-  if (MM_logoutRedirectPage = "") Then MM_logoutRedirectPage = CStr(Request.ServerVariables("URL"))
-  If (InStr(1, UC_redirectPage, "?", vbTextCompare) = 0 And Request.QueryString <> "") Then
-    MM_newQS = "?"
-    For Each Item In Request.QueryString
-      If (Item <> "MM_Logoutnow") Then
-        If (Len(MM_newQS) > 1) Then MM_newQS = MM_newQS & "&"
-        MM_newQS = MM_newQS & Item & "=" & Server.URLencode(Request.QueryString(Item))
-      End If
-    Next
-    if (Len(MM_newQS) > 1) Then MM_logoutRedirectPage = MM_logoutRedirectPage & MM_newQS
-  End If
-	if Session("vbRedirect") <> "" then 'Dieu huong co muc dich
-		 Response.Redirect(Session("vbRedirect"))
+
+	if Request.QueryString("vbRedirect") <> "" then 'Dieu huong co muc dich
+		Response.Redirect(redirectContent(Request.QueryString("vbRedirect")))	
 	else
 		Response.Redirect(MM_logoutRedirectPage)
 	end if
@@ -245,16 +256,23 @@ function addItem(productid) 'ham them 1 san pham vao gio hang
 			set cart=Session("Cart")
 		end if
 		'Neu san pham chua co trong gio hang
-		
 		if (cart.Exists(productid) <> "True") then
-			cart.Add productid,"1"
+			if getItemCount() < 10 then
+				cart.Add productid,"1"
+			else
+				Session("statusBasket") = "Bạn chỉ được mua tối đa 10 loại sản phẩm"
+			end if
 		else
 			cart.Item(productid)=(CInt(cart.Item(productid))+1)
 		end if
 		
 		if (quantityQuery.Exists("Null")) then
+			if getItemCount() < 10 then
 				stringQuery = "INSERT INTO dbo.tb_basket values ("&CInt(Session("MM_UserID"))&","&CInt(productid)&", 1)"
 				queryAction(stringQuery)
+			else
+				Session("statusBasket") = "Bạn chỉ được mua tối đa 10 loại sản phẩm"
+			end if
 		else
 				stringQuery = "Update dbo.tb_basket SET quantity = "&quantity+1&" WHERE productID = '"&CInt(productid)&"' And userID = '"&CInt(Session("MM_UserID"))&"' "
 				queryAction(stringQuery)
@@ -292,21 +310,23 @@ function changeItem(productid,num) 'cap nhat so luong 1 san pham
 	'Neu san pham khong co trong gio hang
 	productid = CStr(productid)
 	
-	if(cart.Item(productid) = 0) then
+	if(getQuantity(productid)  = 0) then
 		removeItem(productid)
 	else
 		cart.Item(productid)=(CInt(cart.Item(productid))+num)
 		if Session("MM_UserID") <> "" then
 			set quantityQuery = getValuequery("quantity","dbo.tb_basket","where productID = "&productid&" And userID = "&Session("MM_UserID"))
-			quantity = quantityQuery.Item("quantity")
-			if quantity > 0 and quantity < 1000 then 
-				stringQuery = "Update dbo.tb_basket SET quantity = "&CInt(quantity+num)&" WHERE productID = "&productid&" And userID = "&Session("MM_UserID")
-				queryAction(stringQuery)
-			else
-				Session("statusBasket") = "Bạn chỉ được nhập tối thiểu 1 hoặc tối đa là 999 đối với số lượng sản phẩm"
+			if (not quantityQuery.Exists("Null")) then
+				quantity = quantityQuery.Item("quantity")
+				if quantity > 0 and quantity < 11 then 
+					stringQuery = "Update dbo.tb_basket SET quantity = "&CInt(quantity+num)&" WHERE productID = '"&productid&"' And userID = "&Session("MM_UserID")
+					queryAction(stringQuery)
+				else
+					Session("statusBasket") = "Mỗi loại sản phẩm bạn chỉ mua được tối đa 10"
+				end if
 			end if
 		end if
-		if(cart.Item(productid) = 0) then
+		if(getQuantity(productid)  = 0) then
 			removeItem(productid)
 		end if
 	end if
@@ -317,7 +337,7 @@ function getQuantity(productid) 'lay so luong cua 1 san pham
 	productId = Cstr(productid)
 	getQuantity = (cart.Item(productid))
 	if Session("MM_UserID") <> "" then
-		quantityQuery = getValuequery("quantity","dbo.tb_basket","where productID = "&productid&" And userID = "&Session("MM_UserID"))
+		set quantityQuery = getValuequery("quantity","dbo.tb_basket","where productID = "&productid&" And userID = '"&Cint(Session("MM_UserID"))&"' ")
 		getQuantity = quantityQuery.Item("quantity")
 	end if
 End Function
@@ -347,14 +367,14 @@ function updateShoppingCart() 'cap nhat gio hang
 				cart.Remove(strKey)
 			end if
 			if (updateValue <> "") then
-				if(updateValue > 0 and updateValue < 1000 ) then
+				if(updateValue > 0 and updateValue < 11 ) then
 					cart.Item(strKey)=updateValue
 					if Session("MM_UserID") <> "" then
 						stringQuery = "Update dbo.tb_basket SET quantity = "&updateValue&" WHERE productID = "&strKey&" And userID = "&Session("MM_UserID")
 						queryAction(stringQuery)
 					end if
 				else
-					Session("statusBasket") = "Bạn chỉ được nhập tối thiểu 1 hoặc tối đa là 999 đối với số lượng sản phẩm"
+					Session("statusBasket") = "Mỗi loại sản phẩm bạn chỉ mua được tối đa 10"
 				end if
 			end if
 			'loai bo cac so 0 dau chuoi
@@ -407,6 +427,27 @@ elseif Request("option")="update" then 'cap nhat gio hang
 	updateShoppingCart()
 end if
 
+if Request("delCommentID") <> "" then
+	dim id_comment : id_comment = Request("delCommentID")
+	if IsNumeric(id_comment) then
+		if Session("MM_UserAuthorization") = "True" then
+			stringQuery = "Delete From dbo.tb_comment WHERE parentId="&id_comment&" Delete From dbo.tb_comment WHERE cm_ID = "&id_comment
+		else
+			stringQuery = "Delete From dbo.tb_comment WHERE parentId="&Session("id_comment")&" and userID = "&Session("MM_UserID")&" Delete From dbo.tb_comment WHERE cm_ID = "&id_comment&" and userID = "&Session("MM_UserID")
+		end if
+		queryAction(stringQuery)
+	end if
+end if
+' Xac nhan don hang
+if Request("confirmOrder") <> "" and Request("valueConfirm") <> "" then
+	dim id_order : id_order = Request("confirmOrder")
+	if IsNumeric(id_order) and IsNumeric(Request("valueConfirm")) then
+		if Session("MM_UserAuthorization") = "True" then
+			stringQuery = "Update dbo.tb_order set status = "&Request("valueConfirm")&"  WHERE orderId="&id_order
+		queryAction(stringQuery)
+		end if
+	end if
+end if
 function boxProduct (id,name,price,newArrival,img,inventory)
 %>
 	<div class="col-sm-4">
@@ -421,7 +462,9 @@ function boxProduct (id,name,price,newArrival,img,inventory)
 		<% if inventory = "True" then %>
 		<a href="?option=add&ID=<%=id%>" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Thêm vào giỏ hàng</a>
 		<% else %>
-			<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-times"></i>Chưa có hàng</a>
+			<a href="#" class="btn btn-primary" style="
+    margin: 0 0 25px 0px;
+"><i class="fa fa-times"></i> Chưa có hàng</a>
 		<% end if %>
 				</div>
 			</div>

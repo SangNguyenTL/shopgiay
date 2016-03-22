@@ -103,8 +103,8 @@ End Function
 				<div class="row">
 					<div class="col-sm-2">
 						<div class="companyinfo">
-							<h2><span>G</span>iày <span>C</span>ủa <span>T</span>ui</h2>
-							<p>Thanks you for visiting us websites.</p>
+							<h2><span>G</span>iày <span>C</span>ua <span>T</span>ui</h2>
+							<p>Cám ơn bạn đã ghé thăm chúng tôi</p>
 						</div>
 					</div>
 					<div class="col-sm-7">
@@ -135,7 +135,7 @@ Wend
 					<div class="col-sm-3">
 						<div class="address">
 							<img src="images/home/map.png" alt="" />
-							<p>590 CMT8,Ho Chi Minh City, VietNam</p>
+							<p><%=siteAddress%></p>
 						</div>
 					</div>
 				</div>
@@ -202,25 +202,16 @@ Wend
 				})		
 
 </script>
-<!--script type="text/javascript">	
-				$('.search_box #find').blur(function() {
-					var value = $(this).text();
-					$.post('ajaxindexfind.asp',{
-						productname : value
-					},function(){
-						$("")
-					});
-				});
-</script-->
+
 <% end if %>
 <script src="js/jquery.scrollUp.min.js"></script>
 <script src="js/price-range.js"></script>
-<script src="js/jquery.prettyPhoto.js"></script>
+<script src="js/jquery.elevateZoom-3.0.8.min.js"></script>
 <script src="js/main.js"></script>
 
 <script type="text/javascript">
 
-	var changeHl = ".cart_quantity_down,.cart_quantity_up,.add-to-cart,.cart_quantity_delete,.del-all".split(",");
+	var changeHl = ".cart_quantity_down,.cart_quantity_up,.add-to-cart,.del-comment,.rep-comment".split(",");
 				$.each(changeHl,function(key,item){
 					$(item).each(function(){
 						var url = $(this).attr("href");
@@ -232,8 +223,13 @@ Wend
 				$(document).on('click','.add-to-cart',function(){
 					var url = $(this).attr("data-href",url);
 					$.get($(this).attr("data-href"),{},function(result){
+						$(".header-bottom .container").append('<div id="statusBasket"></div>');
 						var success =  $($.parseHTML(result)).find(".count.badge").text();
-						
+						$("#statusBasket").html('<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">  <div class="modal-dialog modal-sm">    <div class="modal-content well">Bạn đã thêm một sản phẩm vào giỏ hàng</div>  </div></div>');
+						if($($.parseHTML(result)).find("#statusBasket").text()!=""){
+							$("#statusBasket").html('<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">  <div class="modal-dialog modal-sm">    <div class="modal-content well">'+$($.parseHTML(result)).find("#statusBasket").text()+'</div>  </div></div>');
+						}
+						$('.bs-example-modal-sm').modal('toggle');
 						$(".count.badge").removeClass("hidden").text(success)
 					});
 					return false
@@ -246,7 +242,8 @@ Wend
 						var id = "[name="+$this.closest('.cart_quantity_button').find("input").attr("name")+"]";
 						result = $($.parseHTML(result));
 						var qty = result.find(id).val();
-						if(qty == 0 || qty == ""){
+						console.log(qty);
+						if(qty == 0 || qty == "0" || qty == undefined){
 							$this.closest('tr').remove();
 						}else{
 							$this.closest('.cart_quantity_button').find("input").val(qty);
@@ -256,12 +253,14 @@ Wend
 					});
 					return false
 				});
-				$(document).on('click','.cart_quantity_delete,.del-all',function(){
+<% end if %>
+<% if  GetFileName() = "product-detail.asp" then %>
+				$(document).on('click','.del-comment,.rep-comment',function(){
 					var url = $(this).attr("data-href",url);
 					var $this = $(this);
 					$.get($(this).attr("data-href"),{},function(result){
 						result = $($.parseHTML(result));
-						$(".content").html(result.find(".content").html());
+						$("#content-comments").html(result.find("#content-comments").html());
 					});
 					
 					return false
@@ -270,7 +269,36 @@ Wend
 				$(document).on('click','a[href=#]',function(){
 					return false
 				});
+	$('[data-toggle="modal"]').on('click',function(){
+		var $this = $(this);
+		var detail = JSON.parse($this.closest('td').find('span.hidden').text());
+		var html="";
+		$.each(detail.cart_detail,function(key,item){
+			html +='<tr>';
+			html +='	<td><img src="'+item.img+'" alt="" style="width:90px"></td>';
+			html +='	<td><a href="product-detail.asp?productID='+item.id+'">'+item.name+'</td>';
+			html +='	<td>';
+			html +='		<p>'+item.price+'</p>';
+			html +='	</td>';
+			html +='	<td>'+item.quantity+'</td>';
+			html +='	<td>'+item.total+'</td>';
+			html +='</tr>';
+		});
+		$this.closest('td').find(".content-detail").html(html);
+	});
 
+$(document).ready(function () {
+$("#zoom_01").elevateZoom({ zoomType: "lens", containLensZoom: true, gallery:'gallery_01f', cursor: 'pointer', galleryActiveClass: "active"}); 
+
+$("#zoom_01").bind("click", function(e) {  
+  var ez =   $('#zoom_01').data('elevateZoom');
+  ez.closeAll(); //NEW: This function force hides the lens, tint and window	
+	$.fancybox(ez.getGalleryList());     
+    
+  return false;
+}); 
+
+}); 
 </script>
 
 </body>

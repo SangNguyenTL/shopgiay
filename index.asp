@@ -6,7 +6,7 @@ Dim rsProductnew_numRows
 
 Set rsProductnew_cmd = Server.CreateObject ("ADODB.Command")
 rsProductnew_cmd.ActiveConnection = MM_Connect_STRING
-rsProductnew_cmd.CommandText = "SELECT * FROM dbo.tb_product WHERE inventory = 0 ORDER BY dateEntry DESC" 
+rsProductnew_cmd.CommandText = "SELECT * FROM dbo.tb_product ORDER BY dateEntry DESC" 
 rsProductnew_cmd.Prepared = true
 
 Set rsProductnew = rsProductnew_cmd.Execute
@@ -316,7 +316,7 @@ End If
   Dim proName : proName = rsProductnew.Fields.Item("proName").value
   Dim price : price = rsProductnew.Fields.Item("price").value
   Dim newArrival : newArrival = rsProductnew.Fields.Item("newArrival").value
-  Dim inventory : inventory = rsProductnew.Fields.Item("newArrival").value
+  Dim inventory : inventory = rsProductnew.Fields.Item("inventory").value
   id = rsProductnew.Fields.Item("productID").value
    %>
 	<%=boxProduct(id,proName,price,newArrival,Split(imagePr,",")(0),inventory)%>
@@ -328,23 +328,17 @@ Wend
 rsProductnew.Close()
 Set rsProductnew = Nothing
 %>
+        <div class="col-sm-12">
+        <div class="dataTables_paginate paging_simple_numbers">
+        <ul class="pagination">
+        <% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_moveFirst%>">Đầu tiên</a></li><% End If %>
+        <% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_movePrev%>">Trước</a></li><% End If %>
+        <% If Not MM_atTotal Then %><li class="paginate_button "><a href="<%=MM_moveNext%>">Kế</a></li><% End If %>
+		<% If Not MM_atTotal Then %><li class="paginate_button"><a href="<%=MM_moveLast%>">Cuối</a></li><% End If %>
+        </ul>
+        </div>
+        </div>
                   </div><!--features_items-->
-			<div class="row">
-				<ul class="nav navbar-nav">
-				<% If MM_offset <> 0 Then %>
-				  <li><a href="<%=MM_moveFirst%>">Trang đầu</a></li>
-				<% End If 
-				If MM_offset <> 0 Then %>
-				  <li><a href="<%=MM_movePrev%>">Trang trước</a></li>
-				<% End If 
-				If Not MM_atTotal Then %>
-				  <li><a href="<%=MM_moveNext%>">Trang sau</a></li>
-				<% End If 
-				If Not MM_atTotal Then %>
-				  <li><a href="<%=MM_moveLast%>">Trang cuối</a></li>
-				<% End If %>
-				</ul>
-				</div>
 <!-- rs liet ke thuong hieu -->
 <%
 Dim rsHangCaoCap
@@ -353,7 +347,7 @@ Dim rsHangCaoCap_numRows
 
 Set rsHangCaoCap_cmd = Server.CreateObject ("ADODB.Command")
 rsHangCaoCap_cmd.ActiveConnection = MM_Connect_STRING
-rsHangCaoCap_cmd.CommandText = "SELECT * FROM dbo.tb_product WHERE price >= 1000000" 
+rsHangCaoCap_cmd.CommandText = "SELECT * FROM dbo.tb_product WHERE price >= 2000000" 
 rsHangCaoCap_cmd.Prepared = true
 
 Set rsHangCaoCap = rsHangCaoCap_cmd.Execute

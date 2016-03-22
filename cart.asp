@@ -130,10 +130,11 @@ if getItemCount() <> "0" then
 			</div>
 		</div>
 	</section><!--/#do_action-->
-</form><div>
+</form>
+</div>
 <%
 else
-%><div class="countent">
+%><div class="content">
 <div class="alert alert-warning container" >
 Giỏ hàng trống</div>
 	</div>

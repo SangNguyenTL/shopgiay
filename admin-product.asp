@@ -42,8 +42,8 @@ If (Request.QueryString("action") = "") or (Request.QueryString("action") = "add
 			Session("statusProduct") = "Bạn phải thêm ảnh, và chuỗi ảnh nằm trong khoảng 600 ký tự!"
 		Elseif Len(brandName) = 0 then
 			Session("statusProduct") = "Thương hiệu không được bỏ trống"
-		Elseif (Len(price) < 1 or Len(price) > 20) and IsNumeric(price) = "False" then
-			Session("statusProduct") = "Giá thành không được để trống, là chữ số và nằm trong khoảng 20 chữ số!"
+		Elseif (price < 10000 or price > 9999999) and IsNumeric(price) = "False" then
+			Session("statusProduct") = "Giá thành không được để trống, là chữ số và nằm trong khoảng  từ 5 đến 7 chữ số!"
 		Elseif Len(prodescrible) > 500 then
 			Session("statusProduct") = "Mô tả sản phẩm chỉ gồm 500 ký tự!"
 		Elseif inventory = "" then
@@ -96,8 +96,8 @@ Elseif Request.QueryString("action") = "edit" then
 			Session("statusProduct") = "Bạn phải thêm ảnh, và chuỗi ảnh nằm trong khoảng 600 ký tự!"
 		Elseif Len(brandName) = 0 then
 			Session("statusProduct") = "Thương hiệu không được bỏ trống"
-		Elseif (Len(price) < 1 or Len(price) > 20) and IsNumeric(price) = "False" then
-			Session("statusProduct") = "Giá thành không được để trống, là chữ số và nằm trong khoảng 20 chữ số!"
+		Elseif (price < 10000 or price > 9999999) and IsNumeric(price) = "False" then
+			Session("statusProduct") = "Giá thành không được để trống, là chữ số và nằm trong khoảng  từ 5 đến 7 chữ số!"
 		Elseif Len(prodescrible) > 500 then
 			Session("statusProduct") = "Mô tả sản phẩm chỉ gồm 500 ký tự!"
 		Elseif inventory = "" then

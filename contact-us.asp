@@ -15,14 +15,14 @@
     		<div class="row">  	
 	    		<div class="col-sm-8">
 	    			<div class="contact-form">
-	    				<h2 class="title text-center">Get In Touch</h2>
+	    				<h2 class="title text-center">Phản hồi với chúng tôi</h2>
 	    				<div class="status alert alert-success" style="display: none"></div>
 				    	<form id="main-contact-form" class="contact-form row" name="main-contact-form" method="POST">
 				            <div class="form-group col-md-6">
-				                <input type="text" name="name" class="form-control" required placeholder="Name" required pattern="(.){6,50}" title="Từ 6 đến 50 ký tự">
+				                <input type="text" name="name" class="form-control" required placeholder="Name" value="<%=Session("MM_Username")%>" pattern="(.){6,50}" title="Từ 6 đến 50 ký tự">
 				            </div>
 				            <div class="form-group col-md-6">
-				                <input type="email" name="email" class="form-control" required placeholder="Email" required title="Xin điền đầy đủ và đúng quy tắc:
+				                <input type="email" name="email" value="<%=Session("MM_rsEmail")%>" class="form-control" required placeholder="Email" required title="Xin điền đầy đủ và đúng quy tắc:
 abc@gmail.com">
 				            </div>
 				            <div class="form-group col-md-12">
@@ -40,7 +40,7 @@ abc@gmail.com">
 	    		</div>
 	    		<div class="col-sm-4">
 	    			<div class="contact-info">
-	    				<h2 class="title text-center">Contact Info</h2>
+	    				<h2 class="title text-center">Thông tin liên hệ</h2>
 	    				<address>
 	    					<p><%=siteName%></p>
 							<p><%=siteAddress%></p>

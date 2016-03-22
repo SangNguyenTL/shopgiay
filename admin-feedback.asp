@@ -367,7 +367,7 @@ end if
                                   </div>
                                   <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <a href="mailto:<%=email%>" class="btn btn-primary">Trả lời</a>
+                                    <a href="mailto:<%=(feedBack.Fields.Item("email").Value)%>" class="btn btn-primary">Trả lời</a>
                                   </div>
                                 </div>
                               </div>
@@ -381,21 +381,17 @@ Wend
 %>
                     </tbody>
                   </table>
+        <div class="col-sm-7">
+        <div class="dataTables_paginate paging_simple_numbers">
+        <ul class="pagination">
+        <% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_moveFirst%>">Đầu tiên</a></li><% End If %>
+        <% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_movePrev%>">Trước</a></li><% End If %>
+        <% If Not MM_atTotal Then %><li class="paginate_button "><a href="<%=MM_moveNext%>">Kế</a></li><% End If %>
+		<% If Not MM_atTotal Then %><li class="paginate_button"><a href="<%=MM_moveLast%>">Cuối</a></li><% End If %>
+        </ul>
+        </div>
+        </div>
             </div>
-				<ul class="nav navbar-nav">
-				<% If MM_offset <> 0 Then %>
-				  <li><a href="<%=MM_moveFirst%>">Trang đầu</a></li>
-				<% End If 
-				If MM_offset <> 0 Then %>
-				  <li><a href="<%=MM_movePrev%>">Trang trước</a></li>
-				<% End If 
-				If Not MM_atTotal Then %>
-				  <li><a href="<%=MM_moveNext%>">Trang sau</a></li>
-				<% End If 
-				If Not MM_atTotal Then %>
-				  <li><a href="<%=MM_moveLast%>">Trang cuối</a></li>
-				<% End If %>
-				</ul>
             <!-- /.box-body -->
           </div>
           <!-- /.box -->

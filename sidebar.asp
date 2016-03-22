@@ -70,7 +70,7 @@ rsBrand_numRows = rsBrand_numRows + Repeat2__numRows
 								
 							
 							<div class="panel-heading">
-									<h4 class="panel-title"><a href="NewArrival.asp?newArrival=True">Sản phẩm mới</a></h4>
+									<h4 class="panel-title"><a href="search.asp?newArrivalS=1">Sản phẩm mới</a></h4>
 								</div>
 						</div><!--/brands_products-->
 			

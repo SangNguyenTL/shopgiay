@@ -67,10 +67,6 @@ end if
               <img src="<%img%>" class="girl img-responsive" alt="" />
 			</div>
 		<% next %>
-            <div class="item">
-              <div class="col-sm-11"> <img src="images/home/slide2.jpg" class="girl img-responsive" alt="" /> </div>
-            </div>
-          </div>
           <a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev"> <i class="fa fa-angle-left"></i> </a> <a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next"> <i class="fa fa-angle-right"></i> </a>
 		</div>
 		<% end if %>
@@ -81,17 +77,12 @@ end if
 <section>
   <div class="container">
     <div class="row">
-    <table border="0" align="center" cellpadding="5" cellspacing="5">
-  <tr style="text-align:center">
-    <div align="center"><img src="<%=(rs1.Fields.Item("logo").Value)%>" height="200" width="250"/>
-    </div>
-  </tr>
-     <tr>
-      <P><div align="center" style="font-size:20px"><%=(rs1.Fields.Item("brandDS").Value)%>
+<div class="box">
+<div class="page-header text-center"><img src="<%=(rs1.Fields.Item("logo").Value)%>" height="200" width="250"/></div>
+  <div class="box-body well"><%=(rs1.Fields.Item("brandDS").Value)%>
       </div>
-      </P>
-    </tr>
-</table>
+</div>
+
   <% if not rsSP.EOF then %> 
     <div class="recommended_items"><!--new arrival for woman-->
 						<h2 class="title text-center">Một số sản phẩm thuộc thương hiệu <%=brandName%></h2>
@@ -117,7 +108,7 @@ end if
                                   <% elseif i mod 3 = 0 then %>
 								  </div><div class="item">
 								  <% end if	 %>
-									<%=boxProduct(idProduc,nameProduc,priceProduc,newArrivalProduc,imgsProduc(0),inventoryProduc) %>
+									<%=boxProduct(idProduct,nameProduc,priceProduc,newArrivalProduc,imgsProduc(0),inventoryProduc) %>
 <%									
 									if rsSP.AbsolutePosition = rsSP.EOF then %>
                                     </div>
@@ -127,6 +118,8 @@ end if
 								  Repeathai__numRows=Repeathai__numRows-1
 								  rsSP.MoveNext()
 								Wend
+								rsSP.Close()
+								Set rsSP = Nothing
 %>
                                                     
 
@@ -141,16 +134,15 @@ end if
 								<i class="fa fa-angle-right"></i>
 							  </a>
 	  </div><!--/recommended_items-->	<% end if %>
-    </div>
+   <div class="col-sm-12 text-center "> <a class="m-b-sm btn btn-primary" href="search.asp?brandNameS=<%=rs1.Fields.Item("brandName").value%>">Tìm thêm sản phẩm của thương hiệu này</a>
+	</div></div>
 
   </div>
+  
 </section>
-<!--#include file="footer.asp" -->
-<%
-rsSP.Close()
-Set rsSP = Nothing
-%>
 <%
 rs1.Close()
 Set rs1 = Nothing
 %>
+<!--#include file="footer.asp" -->
+

@@ -26,18 +26,19 @@
 <script type="text/javascript">
 $('.delFeed').on('click',function(){
 	var $this = $(this);
-	feedId = $this.val();
+	var feedId = $this.val();
 	$.post('ajaxdelfeed.asp',{
 		feedId: feedId,
-		MM_deelete: 'delFeed'
+		MM_delete: 'delFeed'
 	},function(){
-		alert('Xóa thành công feedback có ID = '+feedId);
+		alert('Xóa thành công phản hồi có ID = '+feedId);
 		$this.closest('tr').hide('slow');
 	});
+	return false
 });
 $(document).on('click','.updateStatus.pending',function(){
 	var $this = $(this);
-	feedId = $this.val();
+	var feedId = $this.val();
 	$.post('ajaxstatusfeed.asp',{
 		feedId: feedId,
 		statusFeed: 1,
@@ -49,7 +50,7 @@ $(document).on('click','.updateStatus.pending',function(){
 });
 $(document).on('click','.updateStatus.pended',function(){
 	var $this = $(this);
-	feedId = $this.val();
+	var feedId = $this.val();
 	$.post('ajaxstatusfeed.asp',{
 		feedId: feedId,
 		statusFeed: 0,
@@ -130,7 +131,6 @@ $(document).on("submit","form#formUpload",function(e) {
 		$this.removeClass("alert-success");
 	}
 	if(!$('[name="file1"]')[0].files[0]){
-
 		$this.addClass("alert-danger").text("Bạn chưa chọn ảnh để tải lên server!").fadeIn().delay(3000).fadeOut();
 	}else if($('[name="file1"]')[0].files[0].size>2097152){
 		$this.addClass("alert-danger").text("Ảnh không được vượt quá 2Mb!").fadeIn().delay(3000).fadeOut();
@@ -169,15 +169,32 @@ $(document).ready(function(){
 <script type="text/javascript">
 	$('.frmDel').on('click',function(){
 		var $this = $(this);
-		userID = $this.val();
+		var userID = $this.val();
 		$.post('ajaxdeluser.asp',{
 			userID : userID,
 			MM_delete : 'frmDel'
 		},function(){
-			alert('Xóa thành công user có ID = '+userID);
+			alert('Xóa thành công thành viên có mã số: '+userID);
 			$this.closest('tr').hide('slow');
 		});
-});
+	});
+	$('[data-toggle="modal"]').on('click',function(){
+		var $this = $(this);
+		var detail = JSON.parse($this.closest('td').find('span.hidden').text());
+		var html="";
+		$.each(detail.cart_detail,function(key,item){
+			html +='<tr>';
+			html +='	<td><img src="'+item.img+'" alt="" style="width:90px"></td>';
+			html +='	<td><a href="product-detail.asp?productID='+item.id+'">'+item.name+'</td>';
+			html +='	<td>';
+			html +='		<p>'+item.price+'</p>';
+			html +='	</td>';
+			html +='	<td>'+item.quantity+'</td>';
+			html +='	<td>'+item.total+'</td>';
+			html +='</tr>';
+		});
+		$this.closest('td').find(".content-detail").html(html);
+	});
 </script>
 </body>
 </html>

@@ -263,7 +263,6 @@ a#scrollUp i{
   outline: medium none;
   padding-left: 10px;
   width: 155px;
-  background-image: url(../images/home/searchicon.png);
   background-repeat: no-repeat;
   background-position: 130px;
 }
@@ -884,6 +883,7 @@ h2.title {
 
 .productinfo img{
   width: 100%;
+  max-height: 270px;
 }
 
 .productinfo{
@@ -1064,8 +1064,7 @@ h2.title {
   background: #ccccc6;
 }
 
-.recommended_items  h2 {
-}
+.recommended_items  h2 {padding-top: 10px;}
 
 .our_partners{
   overflow:hidden;
@@ -2548,3 +2547,4 @@ h2.title {
 .ratio16_9:before{
 	padding-top: 56.25%;
 }
+.m-n{margin:0}

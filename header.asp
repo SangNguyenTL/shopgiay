@@ -2,8 +2,6 @@
 <!--#include file="Connections/Connect.asp" -->
 <!--#include file="function.asp" -->
 <%
-Session.Contents.Remove("vbRedirect")
-Session("vbRedirect") = GetFileName()&"?"&Request.QueryString
 Dim the_title
 Dim title
 Dim classActive
@@ -34,6 +32,9 @@ elseif(GetFileName() = "cart.asp") then
 elseif(GetFileName() = "user-info.asp") then
 	title = "Thông tin cá nhân"
 	classActive6 = "active"
+elseif(GetFileName() = "product-detail.asp") and Request.QueryString("productID") <> "" then
+	title = "Sản phẩm "&Session("proName")
+	Session.Contents.Remove("proName")
 elseif(GetFileName() = "brand-ds.asp") and Request.QueryString("brandName") <> "" then
 	title = "Thương hiệu "&Request.QueryString("brandName")
 End if
@@ -61,10 +62,10 @@ the_title = title &" | Giày của tui"
     <script src="js/respond.min.js"></script>
     <![endif]-->       
     <link rel="shortcut icon" href="images/ico/favicon.ico">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="images/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/ico/favicon2.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ico/favicon2.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/ico/favicon2.ico">
+    <link rel="apple-touch-icon-precomposed" href="images/ico/favicon2.ico">
 
 </head><!--/head-->
 
@@ -77,7 +78,7 @@ the_title = title &" | Giày của tui"
 						<div class="contactinfo">
 							<ul class="nav nav-pills">
 								<li><a href="#"><i class="fa fa-phone"></i> <%=sitePhone%></a></li>
-								<li><a href="mailto:siteEmail"><i class="fa fa-envelope"></i> <%=siteEmail%></a></li>
+								<li><a href="mailto:<%=siteEmail%>"><i class="fa fa-envelope"></i> <%=siteEmail%></a></li>
 							</ul>
 						</div>
 					</div>
@@ -101,7 +102,7 @@ the_title = title &" | Giày của tui"
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="logo pull-left">
-							<a href="/"><img src="images/home/logo.png" alt="" /></a>
+							<a href="<%=linkHome%>"><img src="images/home/logo.png" alt="" /></a>
 						</div>
 					</div>
 					<div class="col-sm-8">
@@ -124,11 +125,12 @@ the_title = title &" | Giày của tui"
 if (Session("MM_Username") <> "") then
 %>
 
+<li><a href="order-user.asp" class="<%=classActive5%>"><i class="fa fa-list"></i> Đơn hàng </a></li>
 <li class="dropdown"><a href='user-info.asp'><i class='fa fa-user'></i> <%=Session.Contents("MM_Username")%></a></li>
 <li><a href="<%= MM_Logout %>"><i class='fa fa-sign-out'></i> Đăng xuất</a></li>
 <% 
 else
-Response.Write("<li><a href='login.asp' class='"&classActive2&"'><i class='fa fa-lock'></i> Đăng nhập / Đăng ký</a></li>")
+Response.Write("<li><a href='login.asp?vbRedirect="&GetFileName()&"' class='"&classActive2&"'><i class='fa fa-lock'></i> Đăng nhập / Đăng ký</a></li>")
 End if
 %>
 							</ul>
@@ -160,14 +162,18 @@ End if
 					</div>
 					<div class="col-sm-3">
 						<div class="search_box pull-right">
-							<input type="text" placeholder="Search"/>
+							<form action="search.asp" method="get">
+							  <input type="text" placeholder="Search" name="proNameS">
+							<button type="submit" placeholder="Search" class="btn btn-primary" value="" style="
+								margin: 0;
+							"><i class="fa fa-search"></i></button></form>
 						</div>
 					</div>
 				</div>
 				<%
 				if Session("statusBasket") <> "" then
 				%>
-					<div class="alert alert-danger"><%=Session("statusBasket")%></div>
+					<div id="statusBasket" class="alert alert-danger"><%=Session("statusBasket")%></div>
 				<%
 					Session.Contents.Remove("statusBasket")
 				end if

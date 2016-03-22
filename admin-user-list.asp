@@ -7,7 +7,7 @@ Dim rsUser_numRows
 
 Set rsUser_cmd = Server.CreateObject ("ADODB.Command")
 rsUser_cmd.ActiveConnection = MM_Connect_STRING
-rsUser_cmd.CommandText = "SELECT userID, fullName, email, phone, Address FROM dbo.tb_user" 
+rsUser_cmd.CommandText = "SELECT userID, fullName, email, phone, Address FROM dbo.tb_user where userID <> 1" 
 rsUser_cmd.Prepared = true
 
 Set rsUser = rsUser_cmd.Execute
@@ -363,52 +363,21 @@ End If
                 
               </tbody>
               </table>
+        <div class="col-sm-7">
+        <div class="dataTables_paginate paging_simple_numbers">
+        <ul class="pagination">
+        <% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_moveFirst%>">Đầu tiên</a></li><% End If %>
+        <% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_movePrev%>">Trước</a></li><% End If %>
+        <% If Not MM_atTotal Then %><li class="paginate_button "><a href="<%=MM_moveNext%>">Kế</a></li><% End If %>
+		<% If Not MM_atTotal Then %><li class="paginate_button"><a href="<%=MM_moveLast%>">Cuối</a></li><% End If %>
+        </ul>
+        </div>
+        </div>
             </div>
             <!-- /.box-body -->
            
           </div>
           <!-- /.box -->
-
-
-        <div class="box-footer clearfix">
-                  <ul class="pagination pagination-sm no-margin pull-right">
-                        <li>
-                        		<!-- <a href="#">«</a> -->
-                                <% If MM_offset <> 0 Then %>
-                               <a href="<%=MM_movePrev%>">«</a>
-                               <% End If ' end MM_offset <> 0
-							   %>
-                        </li>
-                    <li>
-                        		<% If MM_offset <> 0 Then %>
-                               <a href="<%=MM_moveFirst%>">1</a>
-                               <% End If ' end MM_offset <> 0
-							   %>
-           					<!-- <a href="#">1</a></li> -->
-                    <li>
-                   	  <!-- <a href="#">2</a></li> -->
-                            	<% If Not MM_atTotal Then %>
-                               <a href="<%=MM_moveNext%>">2</a>
-                               <% End If ' end Not MM_atTotal
-							   %>
-                        </li>
-                        <li>
-                       		 <!-- <a href="#">3</a></li> -->
-                        	<% If Not MM_atTotal Then %>
-                           <a href="<%=MM_moveNext%>">3</a>
-                           <% End If ' end Not MM_atTotal
-						   %>
-                        </li>
-                        <li>
-                        <% If Not MM_atTotal Then %>
-                       <a href="<%=MM_moveNext%>">»</a>
-                       <% End If ' end Not MM_atTotal
-					   %>
-                     		   <!-- <a href="#">»</a></li> -->
-                        </li>
-                  </ul>
-        </div>
-
   
    </section>    
 

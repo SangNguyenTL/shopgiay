@@ -61,7 +61,7 @@ abc@gmail.com">
 							<input name="txtPass" type="password" placeholder="Mật khẩu" required pattern="(.){6,15}" title="Phải từ 6 đến 15 ký tự">
 							<input name="txtPass2" type="password" placeholder="Nhập lại mật khẩu" required pattern="(.){6,15}" title="Phải từ 6 đến 15 ký tự">
 							<input name="txtAddress" type="text" placeholder="Địa chỉ" required pattern="(.){20,100}" title="Phải từ 30 đến 200 ký tự">
-							<input name="txtPhone" type="text" placeholder="Số điện thoại" required pattern="(\d){8,11}" title="Phải từ 8 đến 11 số">
+							<input name="txtPhone" type="tel" placeholder="Số điện thoại" required pattern="(\d){8,11}" title="Phải từ 8 đến 11 số">
 							<button type="submit" class="btn btn-default">Đăng ký</button>
                             <input type="hidden" name="formRg" value="ok">
                         </form>

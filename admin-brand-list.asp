@@ -1,77 +1,5 @@
 <!--#include file="header-admin.asp" -->
 <%
-Dim MM_paramName 
-%>
-  <%
-' *** Go To Record and Move To Record: create strings for maintaining URL and Form parameters
-
-Dim MM_keepNone
-Dim MM_keepURL
-Dim MM_keepForm
-Dim MM_keepBoth
-
-Dim MM_removeList
-Dim MM_item
-Dim MM_nextItem
-
-' create the list of parameters which should not be maintained
-MM_removeList = "&index="
-If (MM_paramName <> "") Then
-  MM_removeList = MM_removeList & "&" & MM_paramName & "="
-End If
-
-MM_keepURL=""
-MM_keepForm=""
-MM_keepBoth=""
-MM_keepNone=""
-
-' add the URL parameters to the MM_keepURL string
-For Each MM_item In Request.QueryString
-  MM_nextItem = "&" & MM_item & "="
-  If (InStr(1,MM_removeList,MM_nextItem,1) = 0) Then
-    MM_keepURL = MM_keepURL & MM_nextItem & Server.URLencode(Request.QueryString(MM_item))
-  End If
-Next
-
-' add the Form variables to the MM_keepForm string
-For Each MM_item In Request.Form
-  MM_nextItem = "&" & MM_item & "="
-  If (InStr(1,MM_removeList,MM_nextItem,1) = 0) Then
-    MM_keepForm = MM_keepForm & MM_nextItem & Server.URLencode(Request.Form(MM_item))
-  End If
-Next
-
-' create the Form + URL string and remove the intial '&' from each of the strings
-MM_keepBoth = MM_keepURL & MM_keepForm
-If (MM_keepBoth <> "") Then 
-  MM_keepBoth = Right(MM_keepBoth, Len(MM_keepBoth) - 1)
-End If
-If (MM_keepURL <> "")  Then
-  MM_keepURL  = Right(MM_keepURL, Len(MM_keepURL) - 1)
-End If
-If (MM_keepForm <> "") Then
-  MM_keepForm = Right(MM_keepForm, Len(MM_keepForm) - 1)
-End If
-
-' a utility function used for adding additional parameters to these strings
-Function MM_joinChar(firstItem)
-  If (firstItem <> "") Then
-    MM_joinChar = "&"
-  Else
-    MM_joinChar = ""
-  End If
-End Function
-%>
-  <%
-Dim Repeat1__numRows
-Dim Repeat1__index
-
-Repeat1__numRows = 10
-Repeat1__index = 0
-Recordset1_numRows = Recordset1_numRows + Repeat1__numRows
-%>
-
- <%
 Dim MM_deletebrand
 MM_deletebrand = CStr(Request.ServerVariables("SCRIPT_NAME"))
 If (Request.QueryString <> "") Then
@@ -142,11 +70,76 @@ Recordset1_cmd.CommandText = "SELECT brandName, logo FROM dbo.tb_Brand"
 Recordset1_cmd.Prepared = true
 
 Set Recordset1 = Recordset1_cmd.Execute
-Recordset1_numRows = 10
-%>
+Recordset1_numRows = 0
+
+Dim Repeat1__numRows
+Dim Repeat1__index
+
+Repeat1__numRows = 10
+Repeat1__index = 0
+Recordset1_numRows = Recordset1_numRows + Repeat1__numRows 
+
+Dim MM_paramName 
+' *** Go To Record and Move To Record: create strings for maintaining URL and Form parameters
+
+Dim MM_keepNone
+Dim MM_keepURL
+Dim MM_keepForm
+Dim MM_keepBoth
+
+Dim MM_removeList
+Dim MM_item
+Dim MM_nextItem
+
+' create the list of parameters which should not be maintained
+MM_removeList = "&index="
+If (MM_paramName <> "") Then
+  MM_removeList = MM_removeList & "&" & MM_paramName & "="
+End If
+
+MM_keepURL=""
+MM_keepForm=""
+MM_keepBoth=""
+MM_keepNone=""
+
+' add the URL parameters to the MM_keepURL string
+For Each MM_item In Request.QueryString
+  MM_nextItem = "&" & MM_item & "="
+  If (InStr(1,MM_removeList,MM_nextItem,1) = 0) Then
+    MM_keepURL = MM_keepURL & MM_nextItem & Server.URLencode(Request.QueryString(MM_item))
+  End If
+Next
+
+' add the Form variables to the MM_keepForm string
+For Each MM_item In Request.Form
+  MM_nextItem = "&" & MM_item & "="
+  If (InStr(1,MM_removeList,MM_nextItem,1) = 0) Then
+    MM_keepForm = MM_keepForm & MM_nextItem & Server.URLencode(Request.Form(MM_item))
+  End If
+Next
+
+' create the Form + URL string and remove the intial '&' from each of the strings
+MM_keepBoth = MM_keepURL & MM_keepForm
+If (MM_keepBoth <> "") Then 
+  MM_keepBoth = Right(MM_keepBoth, Len(MM_keepBoth) - 1)
+End If
+If (MM_keepURL <> "")  Then
+  MM_keepURL  = Right(MM_keepURL, Len(MM_keepURL) - 1)
+End If
+If (MM_keepForm <> "") Then
+  MM_keepForm = Right(MM_keepForm, Len(MM_keepForm) - 1)
+End If
+
+' a utility function used for adding additional parameters to these strings
+Function MM_joinChar(firstItem)
+  If (firstItem <> "") Then
+    MM_joinChar = "&"
+  Else
+    MM_joinChar = ""
+  End If
+End Function
 
 
-  <%
 '  *** Recordset Stats, Move To Record, and Go To Record: declare stats variables
 
 Dim Recordset1_total
@@ -391,7 +384,7 @@ End If
     </tr>
     <% While ((Repeat1__numRows <> 0) AND (NOT Recordset1.EOF)) %>
       <tr>
-        <td align="center"><%=(Recordset1.Fields.Item("brandName").Value)%></td>
+        <td align="center"><a href="brand-ds.asp?brandName=<%= Recordset1.Fields.Item("brandName").Value %>"><%=(Recordset1.Fields.Item("brandName").Value)%></a></td>
         <td class="imageProduct" align="center"><img class="img-thumbnail" src="<%=(Recordset1.Fields.Item("logo").Value)%>"></td>
        <td width="130" align="center">
               <form ACTION="<%=MM_deletebrand%>" name="form1" METHOD="POST">
@@ -422,18 +415,17 @@ End If
 Wend
 %>
   </table>
-	  </div>
-  <div class="box-footer">
-        <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+        <div class="col-sm-7">
+        <div class="dataTables_paginate paging_simple_numbers">
         <ul class="pagination">
-        <li class="paginate_button previous" id="example2_previous"><% If MM_offset <> 0 Then %>
-        <a href="<%=MM_movePrev%>" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a> <% End If ' end MM_offset <> 0 %></li>
-        <li class="paginate_button active"><% If MM_offset <> 0 Then %><a href="<%=MM_moveFirst%>" aria-controls="example2" data-dt-idx="1" tabindex="0">First</a><% End If ' end MM_offset <> 0 %></li>
-        <li class="paginate_button "><% If Not MM_atTotal Then %><a href="<%=MM_moveNext%>" aria-controls="example2" data-dt-idx="2" tabindex="0">Next</a><% End If ' end Not MM_atTotal %></li>
-        <li class="paginate_button next" id="example2_next"><% If Not MM_atTotal Then %><a href="<%=MM_moveLast%>" aria-controls="example2" data-dt-idx="7"  tabindex="0">Last</a><% End If ' end Not MM_atTotal %></li>
+        <% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_moveFirst%>">Đầu tiên</a></li><% End If %>
+        <% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_movePrev%>">Trước</a></li><% End If %>
+        <% If Not MM_atTotal Then %><li class="paginate_button "><a href="<%=MM_moveNext%>">Kế</a></li><% End If %>
+		<% If Not MM_atTotal Then %><li class="paginate_button"><a href="<%=MM_moveLast%>">Cuối</a></li><% End If %>
         </ul>
         </div>
         </div>
+	  </div>
  
 </div>
 </div>

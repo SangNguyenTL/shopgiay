@@ -5,12 +5,8 @@
 
 if Session("MM_UserAuthorization") <> "True" then
 	Session("statusLogin" ) = "Bạn phải đăng nhập để có thể tiếp tục hành vi này!"
-	Session("vbRedirect") = GetFileName()
-	Response.Redirect("login.asp")
+	Response.Redirect("login.asp?vbRedirect=admin-panel.asp")
 end if
-Session.Contents.Remove("vbRedirect")
-Session("vbRedirect") = GetFileName()
-
 
 Dim namePage
 Dim pageChild
@@ -48,12 +44,16 @@ elseif GetFileName() = "admin-feedback.asp"then
 	activeFeedback = "active"
 elseif GetFileName() = "admin-panel.asp"then
 	namePage = "Trang Quản trị"
-	pageChild = "<li><a href=""admin-brand-list.asp""><i class=""fa fa-edit""></i> Quản trị</a></li>"
-elseif GetFileName() = "admin-comment.asp"then
+elseif GetFileName() = "admin-comment.asp" then
 	namePage = "Quản lý bình luận"
-	pageChild = "<li><a href=""admin-brand-list.asp""><i class=""fa fa-edit""></i> Quản trị</a></li>"
+	pageChild = "<li><a href=""admin-comment.asp""><i class=""fa fa-edit""></i> Quản lý bình luận</a></li>"
+elseif GetFileName() = "admin-order.asp" then
+	namePage = "Quản lý Giỏ hàng"
+	activeOrderlist = "active"
+	pageChild = "<li><a href=""admin-order.asp.asp""><i class=""fa fa-edit""></i> Quản lý đơn hàng</a></li>"
 end if
 %>
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -86,16 +86,16 @@ end if
 </head>
 
 
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-purple sidebar-mini">
 <div class="wrapper">
 
   <header class="main-header">
     <!-- Logo -->
-    <a href="<%=linkSite%>" class="logo">
+    <a href="<%=linkHome%>" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>Quản lý</b></span>
+      <span class="logo-mini"><b>Shop Giày</b></span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Quản lý</b></span>
+      <span class="logo-lg"><b><img src="images/home/logo.png" alt=""></b></span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation">
@@ -134,18 +134,18 @@ end if
         <li class="header">Thanh điều hướng chính</li>
         <li class="<%=activeProductlist%> treeview">
           <a href="#">
-            <i class="fa fa-dashboard"></i> <span>Quản lý sản phẩm</span> <i class="fa fa-angle-left pull-right"></i>
+            <i class="fa fa-dropbox"></i> <span>Quản lý sản phẩm</span> <i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu">
             <li><a href="admin-product.asp"><i class="fa fa-plus"></i> Thêm sản phẩm</a></li>
             <li class="<%=activeProductlistChild%> treeview"><a href="admin-list-product.asp"><i class="fa fa-list"></i> Danh sách <i class="fa fa-angle-left pull-right"></i>
 			</a>
-				<ul class="treeview-menu">
-					<li><a href="admin-list-product.asp">Tất cả</a>
-					<li><a href="admin-list-product.asp?inventory=True">Còn hàng</a>
-					<li><a href="admin-list-product.asp?inventory=False">Hết hàng</a>
-					<li><a href="admin-list-product.asp?newArrival=True">Hàng mới</a>
-					<li><a href="admin-list-product.asp?newArrival=False">Hàng cũ</a>
+				<ul class="<%=activeProductlistChild%> treeview-menu">
+					<li><a href="admin-list-product.asp">Tất cả</a></li>
+					<li><a href="admin-list-product.asp?inventory=True">Còn hàng</a></li>
+					<li><a href="admin-list-product.asp?inventory=False">Hết hàng</a></li>
+					<li><a href="admin-list-product.asp?newArrival=True">Hàng mới</a></li>
+					<li><a href="admin-list-product.asp?newArrival=False">Hàng cũ</a></li>
 				</ul>
 			</li>
           </ul>
@@ -161,28 +161,46 @@ end if
             <li><a href="admin-brand-list.asp"><i class="fa fa-list"></i> Danh sách thương hiệu</a></li>
           </ul>
         </li><!-- /li dong thuong hieu -->
+		
          <li class="<%=activeUserlist%>"><!-- thong tin thanh vien -->
           <a href="admin-user-list.asp">
-            <i class="fa fa-edit"></i> <span>Quản lý thành viên</span>         
-          </a>
-         
+            <i class="fa fa-user"></i> <span>Quản lý thành viên</span>         
+          </a>        
         </li><!-- /li thong tin thanh vien-->
-         <li class="treeview"><!-- thong tin gio hang -->
+		
+         <li class="<%=activeOrderlist%> treeview"><!-- thong tin gio hang -->
           <a href="#">
-            <i class="fa fa-table"></i> <span>Quản lý giỏ hàng</span>
+            <i class="fa fa-shopping-cart"></i> <span>Quản lý đơn hàng</span>
+			<i class="fa fa-angle-left pull-right"></i>
           </a>
+		    <ul class="treeview-menu">
+            <li><a href="admin-order.asp"><i class="fa fa-book"></i> Tất cả</a></li>
+            <li><a href="admin-order.asp?status=1"><i class="fa fa-check"></i> Đã xử lý</a></li>
+            <li><a href="admin-order.asp?status=0"><i class="fa fa-spinner"></i> Chưa xử lý</a></li>
+          </ul>
            </li><!-- /li thong tin gio hang -->
            <li class="<%=activeFeedback%> treeview"><!--Feedback -->
           <a href="admin-feedback.asp">
-            <i class="fa fa-rss-square"></i> <span>Quản lý phản hồi</span>
+            <i class="fa  fa-envelope"></i> <span>Quản lý phản hồi</span>
 			<i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu">
+            <li><a href="admin-feedback.asp"><i class="fa fa-book"></i> Tất cả</a></li>
             <li><a href="admin-feedback.asp?status=True"><i class="fa fa-check"></i> Đã xử lý</a></li>
             <li><a href="admin-feedback.asp?status=False"><i class="fa fa-spinner"></i> Chưa xử lý</a></li>
           </ul>
         </li><!-- /li feedback -->
- 		<!-- dua den page doi mat khau -->
+		 <li><!--Comment -->
+          <a href="admin-comment.asp">
+            <i class="fa  fa-comment"></i> <span>Quản lý bình luận</span>
+          </a>
+        </li>
+		 <li class="treeview"><!-- Home -->
+          <a href="admin-panel.asp">
+            <i class="fa fa-home"></i> <span>Trang quản trị</span>         
+          </a>
+         
+        </li>
       </ul>
     </section>
     <!-- /.sidebar -->
@@ -194,7 +212,7 @@ end if
        <%=NamePage%>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="<%=linkHome%>"><i class="fa fa-home"></i> Trang chủ</a></li>
+        <li><a href="<%=linkHomeAD%>"><i class="fa fa-home"></i> Trang quản trị</a></li>
 		<%=pageChild%>
       </ol>
     </section>

@@ -1,6 +1,20 @@
 <%@LANGUAGE="VBSCRIPT"%>
 <!--#include file="Connections/Connect.asp" -->
 <%
+Dim rsGotoDetail
+Dim rsGotoDetail_cmd
+Dim rsGotoDetail_numRows
+
+Set rsGotoDetail_cmd = Server.CreateObject ("ADODB.Command")
+rsGotoDetail_cmd.ActiveConnection = MM_Connect_STRING
+rsGotoDetail_cmd.CommandText = "SELECT * FROM dbo.tb_product " 
+rsGotoDetail_cmd.Prepared = true
+
+Set rsGotoDetail = rsGotoDetail_cmd.Execute
+rsGotoDetail_numRows = 0
+
+Dim MM_paramName 
+
 Dim brandName : brandName = Request("brandName")
 	Dim MM_abortEdit ,MM_editajaxbrand
 	Dim Repeat__numRows
@@ -30,24 +44,26 @@ While ((Repeat__numRows <> 0) AND NOT (MM_editajaxbrand.EOF))
 									id = MM_editajaxbrand.Fields.Item("productID").Value
 									inventory = MM_editajaxbrand.Fields.Item("inventory").Value
 %>
-										<div class="col-sm-3">
-											<div class="product-image-wrapper">
-												<div class="single-products">
-													<div class="productinfo text-center boxc">
-														<img class="contentc" src="<%=Hinh(0)%>" alt="">
-														<% if newArrival = "True" then %>
-														<img src="images/home/new.png" class="new" alt="" style="width: 42px;">                                       <% end if %>   
-														<h2> <%=Gia %> VNĐ</h2>
-														<p> <%=TenSP%></p>
-											<% if inventory = "True" then %>
-											<a href="?option=add&ID=<%=id%>" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Thêm vào giỏ hàng</a>
-											<% else %>
-												<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-times"></i>Chưa có hàng</a>
-											<% end if %>
-													</div>
-												</div>
-											</div>
-										</div>
+	<div class="col-sm-3">
+		<div class="product-image-wrapper">
+			<div class="single-products">
+				<div class="productinfo text-center boxc">
+					<img class="contentc" src="<%=Hinh(0)%>" alt="">
+					<% if newArrival = "True" then %>
+					<img src="images/home/new.png" class="new" alt="" style="width: 42px;">                                  <% end if %>   
+					<h2> <%=Gia %> VNĐ</h2>
+				  <p><a href="product-detail.asp?productID=<%=id%>"><%=TenSP%></a></p>
+		<% if inventory = "True" then %>
+		<a href="?option=add&ID=<%=id%>" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Thêm vào giỏ hàng</a>
+		<% else %>
+			<a href="#" class="btn btn-primary" style="
+    margin: 0 0 25px 0px;
+"><i class="fa fa-times"></i> Chưa có hàng</a>
+		<% end if %>
+				</div>
+			</div>
+		</div>
+	</div>
 
 								<% 
 										Repeat__index=Repeat__index+1
@@ -59,4 +75,6 @@ While ((Repeat__numRows <> 0) AND NOT (MM_editajaxbrand.EOF))
 										Set MM_editajaxbrand = Nothing 
   End If
 End If
+rsGotoDetail.Close()
+Set rsGotoDetail = Nothing
 %>

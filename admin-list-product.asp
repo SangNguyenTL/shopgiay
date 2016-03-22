@@ -23,7 +23,7 @@ If (CStr(Request("MM_delete")) = "form1" And CStr(Request("MM_recordId")) <> "")
     MM_editCmd.ActiveConnection.Close
 
     ' append the query string to the redirect URL
-    Dim MM_editRedirectUrl
+    Dim MM_editRedirectUrls
     MM_editRedirectUrl = "admin-list-product.asp"
     If (Request.QueryString <> "") Then
       If (InStr(1, MM_editRedirectUrl, "?", vbTextCompare) = 0) Then
@@ -76,7 +76,7 @@ rsListproduct_cmd.CommandText = "SELECT productID, proName, price, inventory, da
 rsListproduct_cmd.Prepared = true
 
 Set rsListproduct = rsListproduct_cmd.Execute
-rsListproduct_numRows = 10
+rsListproduct_numRows = 0
 %>
 <!-- tao  dynamic table -->
 <%
@@ -372,13 +372,17 @@ End If
           <div class="box">
             <div class="box-header">
             <!-- /.box-header -->
-            <div class="box-body table-responsive no-padding">
+			<p class="alert alert-warning" style="
+    margin: 10px;
+"> (*) Xóa sản phẩm sẽ xóa toàn bộ bình luận và giỏ hàng có chứa sản phẩm này! </p>
             <h1>Danh sách sản phẩm</h1>
 			<% if (Session("statusDelproduct")<> "") then
 				Response.Write("<p class=""alert alert-success"">"&Session.Contents("statusDelproduct")&"</p>")
 				Session.Contents.Remove("statusDelproduct")
 			end if%>
-                  <table class="table table-hover">
+			</div>
+			<div class="box-body">
+                  <table class="table table-responsive table-hover">
 					<thead>
                       <tr>
                         <th>Tên sản phẩm</th>
@@ -391,7 +395,6 @@ End If
                       </tr>
 					</thead>
                     <tbody>
-                      <tr>
                         <% While ((Repeat1__numRows <> 0) AND (NOT rsListproduct.EOF)) %>
 						<%
 							Dim inven
@@ -403,7 +406,7 @@ End If
 							end if
 						%>
                       <tr>
-                        <td><%=(rsListproduct.Fields.Item("proName").Value)%></td>
+                        <td><a href="product-detail.asp?productID=<%=(rsListproduct.Fields.Item("productID").Value)%>"><%=(rsListproduct.Fields.Item("proName").Value)%></a></td>
                         <td style="text-align:center"><%=(rsListproduct.Fields.Item("price").Value)%></td>
                         <td style="text-align:center"><%=inven%></td>
                         <td><%=(rsListproduct.Fields.Item("dateEntry").Value)%></td>
@@ -433,14 +436,13 @@ Wend
                     </tr>
                     </tbody>
                   </table>
-               <div class="col-sm-7">
-        <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+        <div class="col-sm-7">
+        <div class="dataTables_paginate paging_simple_numbers">
         <ul class="pagination">
-        <li class="paginate_button previous" id="example2_previous"><% If MM_offset <> 0 Then %>
-        <a href="<%=MM_movePrev%>" aria-controls="example2" data-dt-idx="0" tabindex="0">Previous</a> <% End If %></li>
-        <li class="paginate_button active"><% If MM_offset <> 0 Then %><a href="<%=MM_moveFirst%>" aria-controls="example2" data-dt-idx="1" tabindex="0">First</a><% End If %></li>
-        <li class="paginate_button "><% If Not MM_atTotal Then %><a href="<%=MM_moveNext%>" aria-controls="example2" data-dt-idx="2" tabindex="0">Next</a><% End If %></li>
-        <li class="paginate_button next" id="example2_next"><% If Not MM_atTotal Then %><a href="<%=MM_moveLast%>" aria-controls="example2" data-dt-idx="7"  tabindex="0">Last</a><% End If %></li>
+        <% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_moveFirst%>">Đầu tiên</a></li><% End If %>
+        <% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_movePrev%>">Trước</a></li><% End If %>
+        <% If Not MM_atTotal Then %><li class="paginate_button "><a href="<%=MM_moveNext%>">Kế</a></li><% End If %>
+		<% If Not MM_atTotal Then %><li class="paginate_button"><a href="<%=MM_moveLast%>">Cuối</a></li><% End If %>
         </ul>
         </div>
         </div>
