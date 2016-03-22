@@ -1,8 +1,4 @@
-
 <!--#include file="header.asp" -->
-
-
-
 <!-- tao rs -->
 <%
 if Request.QueryString("productID") = "" or not IsNumeric(Request.QueryString("productID")) then
@@ -549,10 +545,9 @@ next
                                 <% else %>
 									<div class="col-sm-12">
 									<p class="alert alter-warning">Bạn phải <a href="login.asp?vbRedirect=<%=GetFileName()&"&"&Request.ServerVariables("QUERY_STRING")%>">đăng nhập</a> mới được bình luận!</p>
+									</div>
 									<% end if %>
-								  </div>
-							  </div>
-							  </div>
+								  
         <div class="col-sm-7">
         <div class="dataTables_paginate paging_simple_numbers">
         <ul class="pagination">
@@ -563,7 +558,8 @@ next
         </ul>
         </div>
 							</div>
-							
+							  </div>
+							  </div>							
 					</div><!--/category-tab-->
 <!-- rs sap thuoc thuong hieu -->
 <%
@@ -582,6 +578,8 @@ rsSPatTH_numRows = 6
 
 <!-- dynamic table cua  rsSPatTH-->
 
+					
+				</div>
 					<div class="recommended_items"><!--recommended_items-->
 						<h2 class="title text-center">Sản phẩm cùng thương hiệu</h2>
 						
@@ -620,14 +618,13 @@ rsSPatTH_numRows = 6
 							</div>
 							 			
 						</div>
-													 <a class="left recommended-item-control" href="#recommended-item-carousel" data-slide="prev">
+							<a class="left recommended-item-control" href="#recommended-item-carousel" data-slide="prev">
 								<i class="fa fa-angle-left"></i>
 							  </a>
 							  <a class="right recommended-item-control" href="#recommended-item-carousel" data-slide="next">
 								<i class="fa fa-angle-right"></i> </a>
 					</div><!--/recommended_items-->
-					
-				</div>
+
             </div>
 		</div>
 	</section>
