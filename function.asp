@@ -462,9 +462,7 @@ function boxProduct (id,name,price,newArrival,img,inventory)
 		<% if inventory = "True" then %>
 		<a href="?option=add&ID=<%=id%>" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Thêm vào giỏ hàng</a>
 		<% else %>
-			<a href="#" class="btn btn-primary" style="
-    margin: 0 0 25px 0px;
-"><i class="fa fa-times"></i> Chưa có hàng</a>
+			<a href="#" class="btn btn-default add-to-cart not"><i class="fa fa-times"></i> Chưa có hàng</a>
 		<% end if %>
 				</div>
 			</div>

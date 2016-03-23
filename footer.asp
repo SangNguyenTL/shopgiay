@@ -220,7 +220,7 @@ Wend
 					})
 				});
 
-				$(document).on('click','.add-to-cart',function(){
+				$(document).on('click','.add-to-cart:not(.not)',function(){
 					var url = $(this).attr("data-href",url);
 					$.get($(this).attr("data-href"),{},function(result){
 						$(".header-bottom .container").append('<div id="statusBasket"></div>');

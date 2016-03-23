@@ -348,12 +348,9 @@ End If
 
 <section>
 	<div class="container">
-		<div class="row">
-			<div class="features_items"><!--features_items-->
+					<!--features_items-->
 				<h2 class="title text-center">Kết quả tìm kiếm</h2>
-				<div class="box">
-					<div class="box-header">
-						<div class="col-sm-12 form-horizontal">
+<div class="col-sm-12 form-horizontal">
 							<div class="form-group">
 								<form id="form1" name="form1" method="get" action="" >
 									<div class="col-sm-2">
@@ -436,30 +433,26 @@ End If
 								</form>
 							</div>
 						</div>
-					</div>
-					<div class="box-body">
-					 <% While ((Repeat2__numRows <> 0) AND (NOT Recordset2.EOF)) 
-						Response.Write(boxProduct((Recordset2.Fields.Item("productID").Value),(Recordset2.Fields.Item("proName").Value),(Recordset2.Fields.Item("price").Value),(Recordset2.Fields.Item("newArrival").Value),(Recordset2.Fields.Item("image").Value),(Recordset2.Fields.Item("inventory").Value)))
-						Repeat2__index=Repeat2__index+1
-						Repeat2__numRows=Repeat2__numRows-1
-						Recordset2.MoveNext()
-						Wend %>
-					<div class="col-sm-12">
-					<div class="dataTables_paginate paging_simple_numbers">
-					<ul class="pagination">
-					<% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_moveFirst%>">Đầu tiên</a></li><% End If %>
-					<% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_movePrev%>">Trước</a></li><% End If %>
-					<% If Not MM_atTotal Then %><li class="paginate_button "><a href="<%=MM_moveNext%>">Kế</a></li><% End If %>
-					<% If Not MM_atTotal Then %><li class="paginate_button"><a href="<%=MM_moveLast%>">Cuối</a></li><% End If %>
-					</ul>
-					</div>
-					</div>
-				  </div>
-						
-					</div>
+				<div class="col-sm-12"><div class="features_items">
+
+				 <% While ((Repeat2__numRows <> 0) AND (NOT Recordset2.EOF)) 
+					Response.Write(boxProduct((Recordset2.Fields.Item("productID").Value),(Recordset2.Fields.Item("proName").Value),(Recordset2.Fields.Item("price").Value),(Recordset2.Fields.Item("newArrival").Value),(Recordset2.Fields.Item("image").Value),(Recordset2.Fields.Item("inventory").Value)))
+					Repeat2__index=Repeat2__index+1
+					Repeat2__numRows=Repeat2__numRows-1
+					Recordset2.MoveNext()
+					Wend %>
+				<div class="col-sm-12">
+				<div class="dataTables_paginate paging_simple_numbers">
+				<ul class="pagination">
+				<% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_moveFirst%>">Đầu tiên</a></li><% End If %>
+				<% If MM_offset <> 0 Then %><li class="paginate_button"><a href="<%=MM_movePrev%>">Trước</a></li><% End If %>
+				<% If Not MM_atTotal Then %><li class="paginate_button "><a href="<%=MM_moveNext%>">Kế</a></li><% End If %>
+				<% If Not MM_atTotal Then %><li class="paginate_button"><a href="<%=MM_moveLast%>">Cuối</a></li><% End If %>
+				</ul>
 				</div>
-			</div><!--features_items-->
-		</div>
+				</div>
+			  </div>
+			  </div>
 	</div>
 </section>
 	
