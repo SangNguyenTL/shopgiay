@@ -29,7 +29,7 @@ abc@gmail.com">
 				                <input type="text" name="subject" class="form-control" required placeholder="Subject" required pattern="(.){10,50}" title="Từ 10 đến 50 ký tự">
 				            </div>
 				            <div class="form-group col-md-12">
-				                <textarea name="message" id="message" required class="form-control" rows="8" placeholder="Nội dung tin nhắn" pattern="(.){10,500}" title="Từ 50 đến 300 ký tự"></textarea>
+				                <textarea name="message" id="message" required class="form-control" rows="8" placeholder="Nội dung tin nhắn" pattern="(.){10,500}" title="Từ 50 đến 500 ký tự"></textarea>
 				            </div>                        
 				            <div class="form-group col-md-12">
 				                <input type="submit" name="submit" class="btn btn-primary pull-right" value="Submit">

@@ -16,14 +16,14 @@
 	contentNguoigui = HTMLEncode(request.querystring("message"))
 	if (nameNguoigui = "" OR emailNguoigui = "" OR subjectNguoigui = "" OR contentNguoigui = "" ) then
 		response.write("[{""type"":""notFill"",""message"":""Form chưa được điền đủ thông tin""}]")
-	elseif Len(nameNguoigui) < 3 OR Len(nameNguoigui) > 50 then
-		response.write("[{""type"":""notFill"",""message"":""Tên bạn phải từ 3 đến 50 ký tự""}]")	
+	elseif Len(nameNguoigui) < 6 OR Len(nameNguoigui) > 50 then
+		response.write("[{""type"":""notFill"",""message"":""Tên bạn phải từ 6 đến 50 ký tự""}]")	
 	elseif Len(emailNguoigui) > 70 then
 		response.write("[{""type"":""notFill"",""message"":""Email bạn phải nằm trong khoảng 70 ký tự""}]")	
-	elseif Len(subjectNguoigui) > 50 or Len(subjectNguoigui) < 3 then
-		response.write("[{""type"":""notFill"",""message"":""Tiêu đề phải từ 3 đến 50 ký tự""}]")	
+	elseif Len(subjectNguoigui) > 50 or Len(subjectNguoigui) < 10 then
+		response.write("[{""type"":""notFill"",""message"":""Tiêu đề phải từ 10 đến 50 ký tự""}]")	
 	elseif Len(contentNguoigui) > 500 or Len(contentNguoigui) < 30 then
-		response.write("[{""type"":""notFill"",""message"":""Nội dung của bạn phải từ 30 đến 300 ký tự""}]")	
+		response.write("[{""type"":""notFill"",""message"":""Nội dung của bạn phải từ 30 đến 500 ký tự""}]")	
 	else
     Set MM_editfeedbackCmd = Server.CreateObject ("ADODB.Command")
     MM_editfeedbackCmd.ActiveConnection = MM_Connect_STRING

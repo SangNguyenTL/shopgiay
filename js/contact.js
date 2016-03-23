@@ -9,9 +9,9 @@ form.submit(function () {'use strict',
 	$subject = $('[name="subject"]'),
 	$message = $('[name="message"]');
 	$this.find('[name="submit"]').attr('disabled','');
-	if($name.val().length < 6 || $name.val().length > 30){
+	if($name.val().length < 6 || $name.val().length > 50){
 		$name.focus();
-		$this.prev().text("Tên người gửi phải từ 6 đến 30 ký tự").fadeIn().delay(3000).fadeOut();
+		$this.prev().text("Tên người gửi phải từ 6 đến 50 ký tự").fadeIn().delay(3000).fadeOut();
 		$this.find('[name="submit"]').removeAttr('disabled');
 		$this.find('.fa-spinner').remove();
 		return false;
@@ -28,9 +28,9 @@ form.submit(function () {'use strict',
 		$this.find('.fa-spinner').remove();
 		return false;
 	}
-	else if($message.val().length<50 || $message.val().length>300){
+	else if($message.val().length<10 || $message.val().length>500){
 		$message.focus();
-		$this.prev().text("Nội dung phải từ 50 đến 300 ký tự").fadeIn().delay(3000).fadeOut();
+		$this.prev().text("Nội dung phải từ 50 đến 500 ký tự").fadeIn().delay(3000).fadeOut();
 		$this.find('[name="submit"]').removeAttr('disabled');
 		$this.find('.fa-spinner').remove();
 		return false;
