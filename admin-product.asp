@@ -44,8 +44,8 @@ If (Request.QueryString("action") = "") or (Request.QueryString("action") = "add
 			Session("statusProduct") = "Thương hiệu không được bỏ trống"
 		Elseif (price < 10000 or price > 9999999) and IsNumeric(price) = "False" then
 			Session("statusProduct") = "Giá thành không được để trống, là chữ số và nằm trong khoảng  từ 5 đến 7 chữ số!"
-		Elseif Len(prodescrible) > 500 then
-			Session("statusProduct") = "Mô tả sản phẩm chỉ gồm 500 ký tự!"
+		Elseif Len(prodescrible) > 2000 then
+			Session("statusProduct") = "Mô tả sản phẩm chỉ gồm 2000 ký tự!"
 		Elseif inventory = "" then
 			Session("statusProduct") = "Tình trạng sản phẩm không được để trống!"
 		Elseif newArrival = "" then
@@ -98,8 +98,8 @@ Elseif Request.QueryString("action") = "edit" then
 			Session("statusProduct") = "Thương hiệu không được bỏ trống"
 		Elseif (price < 10000 or price > 9999999) and IsNumeric(price) = "False" then
 			Session("statusProduct") = "Giá thành không được để trống, là chữ số và nằm trong khoảng  từ 5 đến 7 chữ số!"
-		Elseif Len(prodescrible) > 500 then
-			Session("statusProduct") = "Mô tả sản phẩm chỉ gồm 500 ký tự!"
+		Elseif Len(prodescrible) > 2000 then
+			Session("statusProduct") = "Mô tả sản phẩm chỉ gồm 2000 ký tự!"
 		Elseif inventory = "" then
 			Session("statusProduct") = "Tình trạng sản phẩm không được để trống!"
 		Elseif newArrival = "" then

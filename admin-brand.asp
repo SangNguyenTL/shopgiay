@@ -37,8 +37,8 @@ if (CStr(Request("MM_action")) <> "") then
 		Session("statusBrand") = "Tên thương hiệu phải nằm trong khoảng 50 ký tự!"
 	elseif Len(logo) < 3 OR Len(logo) > 250 then
 		Session("statusBrand") = "Ảnh thương hiệu phải nằm trong khoảng từ 3 đến 250 ký tự!"
-	elseif Len(brandDS) > 3000 then
-		Session("statusBrand") = "Mô tả về thương hiệu phải nằm trong khoảng 3000 ký tự!"
+	elseif Len(brandDS) > 4000 then
+		Session("statusBrand") = "Mô tả về thương hiệu phải nằm trong khoảng 4000 ký tự!"
 	else
 		if (CStr(Request.Querystring("brandName")) = "") then
 			MM_editRedirectUrl = "admin-brand-list.asp"
@@ -161,7 +161,7 @@ end if
 				</div>
 				<div class="form-group col-xs-12">
 					  <label>Mô tả</label>
-					  <textarea name="txtDes" class="form-control" rows="3" placeholder="Mô tả nằm trong khoảng 500 ký tự"><%=brandDS%></textarea>
+					  <textarea name="txtDes" class="form-control" rows="3" placeholder="Mô tả nằm trong khoảng 4000 ký tự"><%=brandDS%></textarea>
 				</div>
 			  <button type="submit" class="btn btn-primary"><%=buttonForm%></button>
 			  <input type="hidden" name="MM_action" value="<%=MM_action%>">
