@@ -433,7 +433,7 @@ if Request("delCommentID") <> "" then
 		if Session("MM_UserAuthorization") = "True" then
 			stringQuery = "Delete From dbo.tb_comment WHERE parentId="&id_comment&" Delete From dbo.tb_comment WHERE cm_ID = "&id_comment
 		else
-			stringQuery = "Delete From dbo.tb_comment WHERE parentId="&Session("id_comment")&" and userID = "&Session("MM_UserID")&" Delete From dbo.tb_comment WHERE cm_ID = "&id_comment&" and userID = "&Session("MM_UserID")
+			stringQuery = "Delete From dbo.tb_comment WHERE parentId="&id_comment&" and userID = "&Session("MM_UserID")&" Delete From dbo.tb_comment WHERE cm_ID = "&id_comment&" and userID = "&Session("MM_UserID")
 		end if
 		queryAction(stringQuery)
 	end if

@@ -53,8 +53,8 @@ If (CStr(Request("MM_insert")) = "comment") Then
     Dim MM_editCmd
 	Dim plusquery
 	Dim message : message = HTMLEncode(Request.Form("message"))
-	if Len(message) > 300 then
-		Session("statusComment") = "Bình luận của bạn không được quá 300 ký tự!"
+	if Len(message) > 300 or Len(message) < 1 then
+		Session("statusComment") = "Bình luận của bạn phải nằm trong khoảng 300 ký tự!"
 	else
 		if Request.QueryString("parentID") <> "" then
 			queryComment = "INSERT INTO dbo.tb_comment (proID, userID, cmContent, parentID,datePost) VALUES ('"&id&"','"&Session("MM_UserID")&"', N'"&message&"', "&Request.QueryString("parentID")&",getDate())"
